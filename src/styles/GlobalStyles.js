@@ -47,6 +47,39 @@ const GlobalStyles = createGlobalStyle`
     outline: none;
   }
 
+  input[type="checkbox"] {
+  appearance: auto !important;
+  -webkit-appearance: auto !important;
+  accent-color: #0d6efd !important;
+  background-color: #fff !important;
+  border: 1px solid #000 !important;
+}
+
+input,
+textarea,
+select {
+  background-color: #fff !important;
+  color: #000 !important;
+}
+
+.custom-file-upload {
+  position: relative;
+  display: inline-block;
+}
+
+input[type="file"] {
+  display: none;
+}
+
+.custom-file-label {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #fff;
+  color: #000;
+  border: 1px solid #ccc;
+  cursor: pointer;
+}
+
 `;
 
 export default GlobalStyles;
