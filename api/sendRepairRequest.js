@@ -182,6 +182,12 @@ export default async function handler(req, res) {
       throw emailError;
     }
 
+    // Store submission
+    await submissionsCollection.insertOne({
+      ip,
+      timestamp: new Date(),
+    });
+
     client.close();
     res
       .status(200)
