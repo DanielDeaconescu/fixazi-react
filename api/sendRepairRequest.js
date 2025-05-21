@@ -173,6 +173,8 @@ export default async function handler(req, res) {
       if (files.file && files.file[0] && files.file[0].size > 0) {
         await fs.promises.unlink(files.file[0].filepath).catch(console.error);
       }
+
+      res.status(200).json({ message: "Email sent successfully" });
     } catch (emailError) {
       console.error("Email sending failed:", emailError);
       // Clean up file if email fails
