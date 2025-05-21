@@ -94,7 +94,7 @@ export default async function handler(req, res) {
     const deviceType = fields.deviceType || "Nespecificat";
     const brandModel = fields.brandModel || "Nespecificat";
     const problemDescription = fields.problemDescription || "Nespecificat";
-    const acceptContact = fields.acceptContact === "Da";
+    const acceptContact = fields.acceptContact[0] === "Da";
     const preferredContact = acceptContact
       ? fields.preferredContact || "Nespecificat"
       : "Niciuna";
