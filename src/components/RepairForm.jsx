@@ -260,6 +260,7 @@ export default function RepairForm() {
           ref={fileInputRef}
           style={{ display: "none" }}
           onChange={handleFileChange}
+          {...register("file")}
         />
         <span className="file-name">{selectedFileName}</span>
         <div id="fileError" className="text-danger"></div>
