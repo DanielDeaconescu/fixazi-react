@@ -4,6 +4,7 @@ import Home from "./pages/Home";
 import Services from "./pages/Services";
 import Contact from "./pages/Contact";
 import GlobalStyles from "./styles/GlobalStyles";
+import Submitted from "./pages/Submitted";
 
 function App() {
   return (
@@ -13,8 +14,9 @@ function App() {
         <AppLayout>
           <Routes>
             <Route path="/" element={<Home />} />
-            <Route path="/about" element={<Services />} />
-            <Route path="/about" element={<Contact />} />
+            <Route path="/services" element={<Services />} />
+            <Route path="/contact" element={<Contact />} />
+            <Route path="/submitted" element={<Submitted />} />
           </Routes>
         </AppLayout>
       </Router>
