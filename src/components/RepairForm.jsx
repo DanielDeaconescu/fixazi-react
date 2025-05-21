@@ -118,7 +118,7 @@ export default function RepairForm() {
 
       // Close the modal
       const overlay = document.querySelector(".modal-backdrop");
-      overlay.style.opacity = "unset";
+      overlay.style.opacity = "0";
       navigate("/submitted");
 
       // Reset Turnstile after successful submission
