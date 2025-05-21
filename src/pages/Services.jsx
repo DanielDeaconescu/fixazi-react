@@ -1,5 +1,11 @@
+import HeaderServices from "../components/HeaderServices";
+
 function Services() {
-  return <div></div>;
+  return (
+    <>
+      <HeaderServices />
+    </>
+  );
 }
 
 export default Services;

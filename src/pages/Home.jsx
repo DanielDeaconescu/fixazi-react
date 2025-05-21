@@ -1,12 +1,12 @@
 import CallToActionIndex from "../components/CallToActionIndex";
-import Header from "../components/Header";
+import HeaderHome from "../components/HeaderHome";
 import OurValues from "../components/OurValues";
 import PhotoGallery from "../components/PhotoGallery";
 
 function Home() {
   return (
     <>
-      <Header />
+      <HeaderHome />
       <OurValues />
       <CallToActionIndex />
       <PhotoGallery />

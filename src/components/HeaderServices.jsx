@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import indexBackgroundVideo from "../assets/videos/video_header_background.mp4";
+import servicesBackgroundVideo from "../assets/videos/services_hero_section.mp4";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faMessage,
@@ -13,7 +13,7 @@ import TablePrices from "./TablePrices";
 const StyledHeader = styled.header`
   position: relative;
   overflow: hidden;
-  height: 600px;
+  /* height: 600px; */
 `;
 
 const StyledVideo = styled.video`
@@ -52,93 +52,41 @@ const StyledIcon = styled(FontAwesomeIcon)`
   margin-right: 0.5rem;
 `;
 
-function Header() {
+const ServicesParagraph = styled.p`
+  max-width: 70%;
+`;
+
+function HeaderServices() {
   return (
     <>
-      <StyledHeader className="header position-relative video-background">
+      <StyledHeader className="header position-relative video-background py-5">
         <div className="container">
           <StyledVideo autoPlay muted loop playsInline>
-            <source src={indexBackgroundVideo} type="video/mp4" />
+            <source src={servicesBackgroundVideo} type="video/mp4" />
             Your browser does not support the video tag.
           </StyledVideo>
           <StyledOverlay className="overlay"></StyledOverlay>
           <StyledContent className="content">
-            <div className="pt-5 d-flex flex-column align-items-start repair-services-container">
-              <h1 className="mt-5 d-flex flex-column header-title subtitle-custom">
-                Servicii de reparații
-                <span className="text-primary fw-bold">
-                  rapide și calitative
-                </span>
-              </h1>
-              <p className="lead">Servicii de reparații</p>
-              <StyledList className="d-flex flex-column list-unstyled p-0 header-list-custom">
-                <li>
-                  <StyledIcon icon={faSquareCheck} />
-                  Telefoane
-                </li>
-                <li>
-                  <StyledIcon icon={faSquareCheck} />
-                  Tablete
-                </li>
-                <li>
-                  <StyledIcon icon={faSquareCheck} />
-                  Laptop-uri
-                </li>
-              </StyledList>
-              <div className="index-header-buttons d-flex gap-3">
-                <a
-                  href="#"
-                  className="btn btn-primary index-header-prices text-white"
-                  data-bs-toggle="modal"
-                  data-bs-target="#formModal"
-                >
-                  <StyledIcon icon={faMessage} />
-                  Contact
-                </a>
-                <a
-                  className="btn btn-secondary index-header-prices"
-                  data-bs-toggle="modal"
-                  data-bs-target="#repairPricesModal"
-                >
-                  Vezi prețuri estimative
-                </a>
-              </div>
+            <div className="d-flex flex-column justify-content-center align-items-center content">
+              <h1 className="display-4 fw-bold mb-3">Serviciile Noastre</h1>
+              <ServicesParagraph className="lead mb-4">
+                Oferim reparații rapide și de încredere pentru telefoane și
+                tablete. Descoperă ce putem face pentru dispozitivul tău și
+                consultă lista noastră cu prețuri estimative pentru cele mai
+                frecvente probleme.
+              </ServicesParagraph>
+
+              <a
+                className="btn btn-primary btn-lg"
+                data-bs-toggle="modal"
+                data-bs-target="#repairPricesModal"
+              >
+                Vezi prețuri estimative
+              </a>
             </div>
           </StyledContent>
         </div>
       </StyledHeader>
-
-      {/* Repair Form */}
-      <div
-        className="modal fade"
-        id="formModal"
-        tabIndex="-1"
-        aria-labelledby="exampleModalLabel"
-        aria-hidden="true"
-      >
-        <div className="modal-dialog">
-          <div className="modal-content">
-            <div className="modal-header bg-light">
-              <h5 className="modal-title" id="exampleModalLabel">
-                <img
-                  src={LogoFixAzi}
-                  width="200"
-                  alt="logo fixazi reparatii telefoane"
-                />
-              </h5>
-              <button
-                type="button"
-                className="btn-close"
-                data-bs-dismiss="modal"
-                aria-label="Close"
-              ></button>
-            </div>
-            <div className="modal-body bg-light">
-              <RepairForm />
-            </div>
-          </div>
-        </div>
-      </div>
 
       {/* Repair Prices Modal */}
       <div
@@ -193,4 +141,4 @@ function Header() {
   );
 }
 
-export default Header;
+export default HeaderServices;
