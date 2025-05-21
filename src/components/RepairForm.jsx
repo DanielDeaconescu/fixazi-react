@@ -83,7 +83,7 @@ export default function RepairForm() {
   };
 
   const onSubmit = async (data) => {
-    console.log("Form data before submission:", data.file); // Debug
+    console.log("Form data before submission:", data);
 
     try {
       if (!isTurnstileReady || !turnstileToken) {
@@ -92,45 +92,35 @@ export default function RepairForm() {
       }
 
       const formData = new FormData();
-
-      // Append all form fields
       Object.keys(data).forEach((key) => {
         if (key === "file") {
-          // Handle file upload
           if (data.file && data.file[0]) {
             formData.append("file", data.file[0]);
-            console.log("File prepared for upload:", data.file[0]);
           }
         } else {
-          // Handle other fields
           formData.append(key, data[key]);
         }
       });
-
       formData.append("cf-turnstile-response", turnstileToken);
 
+      console.log("Sending request to backend...");
       const response = await fetch("/api/sendRepairRequest", {
         method: "POST",
         body: formData,
       });
 
-      let data;
-      try {
-        data = await response.json();
-      } catch (error) {
-        console.error("Failed to parse JSON:", error);
-        alert("A apărut o eroare. Încearcă din nou.");
-        return;
-      }
+      console.log("Response status:", response.status);
+      const responseData = await response.json().catch((e) => {
+        console.error("JSON parse error:", e);
+        throw new Error("Invalid JSON response");
+      });
+      console.log("Response data:", responseData);
 
-      // Check for specific error code
-      if (response.status === 429 && data.reason === "limit-reached") {
+      if (response.status === 429 && responseData.reason === "limit-reached") {
         alert("Ai atins limita de 3 trimiteri pe zi. Încearcă din nou mâine.");
-      } else if (response.ok && data.success) {
-        // Navigate to the submitted page
+      } else if (response.ok && responseData.success) {
         navigate("/submitted");
-
-        // Close the modal
+        // Modal cleanup code...
         const modalEl = document.getElementById("formModal");
         const modalInstance = Modal.getInstance(modalEl);
         modalInstance?.hide();
@@ -139,18 +129,24 @@ export default function RepairForm() {
           .querySelectorAll(".modal-backdrop")
           .forEach((el) => el.remove());
       } else {
-        console.error("Unexpected backend response:", data);
-        alert("A apărut o eroare. Încearcă din nou.");
+        console.error("Backend response indicates failure:", responseData);
+        alert(
+          `Eroare: ${responseData.message || "Nicio explicație furnizată"}`
+        );
       }
 
-      // Reset Turnstile after successful submission
+      // Reset Turnstile...
       if (window.turnstile && turnstileWidgetRef.current) {
         window.turnstile.reset(turnstileWidgetRef.current);
         setTurnstileToken(null);
         setIsTurnstileReady(false);
       }
     } catch (err) {
-      console.error(err);
+      console.error("Full error details:", {
+        message: err.message,
+        stack: err.stack,
+        response: err.response,
+      });
       alert("A apărut o eroare. Încearcă din nou.");
     }
   };
