@@ -119,6 +119,15 @@ export default function RepairForm() {
       if (response.status === 429 && responseData.reason === "limit-reached") {
         // alert("Ai atins limita de 3 trimiteri pe zi. Încearcă din nou mâine.");
         navigate("/too-many-requests");
+
+        // Modal cleanup
+        const modalEl = document.getElementById("formModal");
+        const modalInstance = Modal.getInstance(modalEl);
+        modalInstance?.hide();
+        document.body.classList.remove("modal-open");
+        document
+          .querySelectorAll(".modal-backdrop")
+          .forEach((el) => el.remove());
       } else if (response.ok && responseData.success) {
         navigate("/submitted");
         // Modal cleanup code...
