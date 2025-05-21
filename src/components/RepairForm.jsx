@@ -117,8 +117,10 @@ export default function RepairForm() {
       if (!response.ok) throw new Error("Eroare la trimiterea formularului");
 
       // Close the modal
-      const overlay = document.querySelector(".modal-backdrop");
-      overlay.style.opacity = "0";
+      const modalEl = document.getElementById("formModal");
+      const modalInstance = Modal.getInstance(modalEl);
+      modalInstance?.hide();
+
       navigate("/submitted");
 
       // Reset Turnstile after successful submission
