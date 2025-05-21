@@ -43,12 +43,16 @@ export default async function handler(req, res) {
       return res.status(200).json({ success: false, reason: "limit-reached" });
     }
 
-    // Parse form data
+    // Parse form data with enhanced configuration
     const form = formidable({
       allowEmptyFiles: true,
       minFileSize: 0,
       multiples: false,
       keepExtensions: true,
+      uploadDir: "/tmp", // Explicitly set upload directory
+      filename: (name, ext, part, form) => {
+        return `${Date.now()}-${part.originalFilename}`;
+      },
     });
 
     const [fields, files] = await new Promise((resolve, reject) => {
@@ -101,11 +105,21 @@ export default async function handler(req, res) {
 
     // Handle file attachment
     let attachments = [];
-    const uploadedFile = files.file;
-    if (uploadedFile && uploadedFile.size > 0) {
+    if (files.file && files.file[0] && files.file[0].size > 0) {
+      const uploadedFile = files.file[0];
+      console.log("Processing file attachment:", {
+        path: uploadedFile.filepath,
+        size: uploadedFile.size,
+        type: uploadedFile.mimetype,
+        name: uploadedFile.originalFilename,
+      });
+
+      // Read file into buffer for attachment
+      const fileBuffer = await fs.promises.readFile(uploadedFile.filepath);
+
       attachments.push({
         filename: uploadedFile.originalFilename || `attachment_${Date.now()}`,
-        path: uploadedFile.filepath,
+        content: fileBuffer, // Use buffer instead of path
         contentType: uploadedFile.mimetype || "application/octet-stream",
       });
     }
@@ -151,25 +165,24 @@ export default async function handler(req, res) {
       attachments,
     };
 
-    await transporter.sendMail(mailOptions);
+    try {
+      const info = await transporter.sendMail(mailOptions);
+      console.log("Email sent:", info.messageId);
 
-    // Clean up file after sending email
-    if (uploadedFile && uploadedFile.size > 0) {
-      fs.unlink(uploadedFile.filepath, (err) => {
-        if (err) console.error("Error deleting temporary file:", err);
-      });
+      // Clean up file after successful email send
+      if (files.file && files.file[0] && files.file[0].size > 0) {
+        await fs.promises.unlink(files.file[0].filepath).catch(console.error);
+      }
+    } catch (emailError) {
+      console.error("Email sending failed:", emailError);
+      // Clean up file if email fails
+      if (files.file && files.file[0] && files.file[0].size > 0) {
+        await fs.promises.unlink(files.file[0].filepath).catch(console.error);
+      }
+      throw emailError;
     }
 
-    // Store submission
-    await submissionsCollection.insertOne({
-      ip,
-      timestamp: new Date(),
-    });
-
-    client.close();
-    res
-      .status(200)
-      .json({ success: true, message: "Form submitted successfully" });
+    // ... (keep your existing submission storage and response code)
   } catch (error) {
     console.error("Error processing form:", error);
     res.status(500).json({
