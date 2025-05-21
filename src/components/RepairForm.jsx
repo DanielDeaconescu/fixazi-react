@@ -79,6 +79,8 @@ export default function RepairForm() {
   };
 
   const onSubmit = async (data) => {
+    console.log("Form data before submission:", data.file); // Debug
+
     try {
       if (!isTurnstileReady || !turnstileToken) {
         alert("Vă rugăm să completați verificarea Turnstile");
@@ -93,6 +95,7 @@ export default function RepairForm() {
           // Handle file upload
           if (data.file && data.file[0]) {
             formData.append("file", data.file[0]);
+            console.log("File prepared for upload:", data.file[0]);
           }
         } else {
           // Handle other fields
@@ -254,13 +257,19 @@ export default function RepairForm() {
           Atașează o imagine (opțional)
         </label>
         <input
+          {...register("file")} // Add this
           className="file-upload"
           name="file"
           type="file"
-          ref={fileInputRef}
+          ref={(e) => {
+            fileInputRef.current = e; // Keep your ref
+            register("file").ref(e); // Connect react-hook-form's ref
+          }}
           style={{ display: "none" }}
-          onChange={handleFileChange}
-          {...register("file")}
+          onChange={(e) => {
+            handleFileChange(e); // Keep your existing handler
+            register("file").onChange(e); // Update react-hook-form
+          }}
         />
         <span className="file-name">{selectedFileName}</span>
         <div id="fileError" className="text-danger"></div>
