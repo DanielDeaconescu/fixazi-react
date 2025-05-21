@@ -81,8 +81,6 @@ input[type="file"] {
 }
 
 
-
-
 `;
 
 export default GlobalStyles;

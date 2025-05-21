@@ -3,6 +3,7 @@ import Navbar from "./Navbar";
 import Footer from "./Footer";
 import styled from "styled-components";
 import CreatedBy from "./CreatedBy";
+import SideButtons from "./SideButtons";
 
 const LayoutWrapper = styled.div`
   display: flex;
@@ -21,6 +22,7 @@ function AppLayout({ children }) {
       <Main className="bg-dark">{children}</Main>
       <Footer />
       <CreatedBy />
+      <SideButtons />
     </LayoutWrapper>
   );
 }
