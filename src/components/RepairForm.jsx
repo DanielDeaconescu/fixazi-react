@@ -87,19 +87,24 @@ export default function RepairForm() {
 
       const formData = new FormData();
 
-      for (const key in data) {
-        if (key === "file" && data[key]?.length > 0) {
-          formData.append("file", data[key][0]);
+      // Append all form fields
+      Object.keys(data).forEach((key) => {
+        if (key === "file") {
+          // Handle file upload
+          if (data.file && data.file[0]) {
+            formData.append("file", data.file[0]);
+          }
         } else {
+          // Handle other fields
           formData.append(key, data[key]);
         }
-      }
+      });
 
       formData.append("cf-turnstile-response", turnstileToken);
 
       const response = await fetch("/api/sendRepairRequest", {
         method: "POST",
-        body: formData,
+        body: formData, // No headers needed for FormData
       });
 
       if (!response.ok) throw new Error("Eroare la trimiterea formularului");
@@ -280,7 +285,8 @@ export default function RepairForm() {
           type="checkbox"
           className="form-check-input"
           id="acceptContact"
-          {...register("acceptContact")}
+          {...register("acceptContact", { value: false })}
+          value="Da" // This will send "Da" when checked
         />
         <label className="form-check-label" htmlFor="acceptContact">
           Sunt de acord să fiu contactat(ă) cu privire la această cerere.
