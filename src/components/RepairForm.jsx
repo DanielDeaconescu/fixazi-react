@@ -1,6 +1,7 @@
 import { useForm } from "react-hook-form";
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { Modal } from "bootstrap";
 
 export default function RepairForm() {
   const navigate = useNavigate();
@@ -115,6 +116,10 @@ export default function RepairForm() {
 
       if (!response.ok) throw new Error("Eroare la trimiterea formularului");
 
+      // Close the modal
+      const modalEl = document.getElementById("formModal");
+      const modalInstance = Modal.getInstance(modalEl);
+      modalInstance.hide();
       navigate("/submitted");
 
       // Reset Turnstile after successful submission
