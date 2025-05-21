@@ -40,7 +40,7 @@ export default async function handler(req, res) {
 
     if (submissionCount >= 3) {
       client.close();
-      return res.status(200).json({ success: false, reason: "limit-reached" });
+      return res.status(429).json({ success: false, reason: "limit-reached" });
     }
 
     // Parse form data with enhanced configuration
