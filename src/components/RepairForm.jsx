@@ -1,7 +1,10 @@
 import { useForm } from "react-hook-form";
 import { useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function RepairForm() {
+  const navigate = useNavigate();
+
   const {
     register,
     handleSubmit,
@@ -112,7 +115,7 @@ export default function RepairForm() {
 
       if (!response.ok) throw new Error("Eroare la trimiterea formularului");
 
-      alert("Cererea a fost trimisă cu succes!");
+      navigate("/submitted");
 
       // Reset Turnstile after successful submission
       if (window.turnstile && turnstileWidgetRef.current) {
