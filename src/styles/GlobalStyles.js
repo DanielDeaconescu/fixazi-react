@@ -80,6 +80,9 @@ input[type="file"] {
   cursor: pointer;
 }
 
+
+
+
 `;
 
 export default GlobalStyles;

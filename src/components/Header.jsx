@@ -1,9 +1,14 @@
 import styled from "styled-components";
 import indexBackgroundVideo from "../assets/videos/video_header_background.mp4";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faMessage, faSquareCheck } from "@fortawesome/free-solid-svg-icons";
+import {
+  faMessage,
+  faSquareCheck,
+  faCircleInfo,
+} from "@fortawesome/free-solid-svg-icons";
 import RepairForm from "./RepairForm";
 import LogoFixAzi from "../assets/images/fixazi_logo.jpg";
+import TablePrices from "./TablePrices";
 
 const StyledHeader = styled.header`
   position: relative;
@@ -91,7 +96,6 @@ function Header() {
                   Contact
                 </a>
                 <a
-                  href="#"
                   className="btn btn-secondary index-header-prices"
                   data-bs-toggle="modal"
                   data-bs-target="#repairPricesModal"
@@ -104,6 +108,7 @@ function Header() {
         </div>
       </StyledHeader>
 
+      {/* Repair Form */}
       <div
         className="modal fade"
         id="formModal"
@@ -130,6 +135,57 @@ function Header() {
             </div>
             <div className="modal-body bg-light">
               <RepairForm />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Repair Prices Modal */}
+      <div
+        className="modal fade"
+        id="repairPricesModal"
+        tabIndex="-1"
+        aria-labelledby="exampleModalLabel"
+        aria-hidden="true"
+      >
+        <div className="modal-dialog modal-xl modal-dialog-centered">
+          <div className="modal-content">
+            <div className="modal-header bg-light">
+              <h5 className="modal-title" id="exampleModalLabel">
+                <img
+                  src={LogoFixAzi}
+                  width="200"
+                  alt="logo fixazi reparatii telefoane"
+                />
+              </h5>
+              <button
+                type="button"
+                className="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div className="modal-body bg-light">
+              <h4>Prețuri Estimative pentru Reparații</h4>
+              <p class="text-muted">
+                <small>
+                  {/* <i class="fa-solid fa-circle-info"></i> */}
+                  <StyledIcon icon={faCircleInfo} />
+                  Prețurile sunt estimative și pot varia în funcție de
+                  diagnostic și de specificul situației.
+                </small>
+              </p>
+              <TablePrices />
+            </div>
+
+            <div class="modal-footer bg-light">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                data-bs-dismiss="modal"
+              >
+                Închide
+              </button>
             </div>
           </div>
         </div>
