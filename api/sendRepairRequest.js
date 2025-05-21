@@ -110,6 +110,10 @@ export default async function handler(req, res) {
       });
     }
 
+    console.log("Received form fields:", fields);
+    console.log("Received files:", files);
+    console.log("Turnstile verification result:", data);
+
     // Send email
     const transporter = nodemailer.createTransport({
       host: process.env.EMAIL_HOST,
