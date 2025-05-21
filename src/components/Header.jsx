@@ -2,7 +2,7 @@ import styled from "styled-components";
 import indexBackgroundVideo from "../assets/videos/video_header_background.mp4";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMessage, faSquareCheck } from "@fortawesome/free-solid-svg-icons";
-import ContactForm from "./ContactForm";
+import RepairForm from "./RepairForm";
 import LogoFixAzi from "../assets/images/fixazi_logo.jpg";
 import { useState } from "react";
 
@@ -142,7 +142,7 @@ function Header() {
               ></button>
             </div>
             <div className="modal-body bg-light">
-              <ContactForm />
+              <RepairForm />
             </div>
           </div>
         </div>

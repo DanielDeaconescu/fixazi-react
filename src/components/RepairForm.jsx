@@ -1,5 +1,5 @@
 import { useForm } from "react-hook-form";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export default function RepairForm() {
   const {
@@ -13,12 +13,78 @@ export default function RepairForm() {
     "Niciun fișier selectat"
   );
   const fileInputRef = useRef(null);
-
-  const [fileName, setFileName] = useState("Niciun fișier selectat");
+  const turnstileWidgetRef = useRef(null);
+  const [isTurnstileReady, setIsTurnstileReady] = useState(false);
+  const [turnstileToken, setTurnstileToken] = useState(null);
+  const [scriptLoaded, setScriptLoaded] = useState(false);
   const acceptContact = watch("acceptContact");
+
+  useEffect(() => {
+    // Check if script is already in the DOM
+    const existingScript = document.querySelector(
+      'script[src="https://challenges.cloudflare.com/turnstile/v0/api.js"]'
+    );
+
+    if (existingScript) {
+      // If script exists but Turnstile isn't loaded yet, wait for it
+      if (!window.turnstile) {
+        existingScript.onload = () => initializeTurnstile();
+      } else {
+        initializeTurnstile();
+      }
+      return;
+    }
+
+    // Only load Turnstile if it's not already loaded
+    const script = document.createElement("script");
+    script.src = "https://challenges.cloudflare.com/turnstile/v0/api.js";
+    script.async = true;
+    script.defer = true;
+    script.onload = () => {
+      setScriptLoaded(true);
+      initializeTurnstile();
+    };
+    document.body.appendChild(script);
+
+    return () => {
+      // Cleanup Turnstile widget when component unmounts
+      if (window.turnstile && turnstileWidgetRef.current) {
+        window.turnstile.remove(turnstileWidgetRef.current);
+      }
+    };
+  }, []);
+
+  const initializeTurnstile = () => {
+    if (
+      window.turnstile &&
+      turnstileWidgetRef.current &&
+      !turnstileWidgetRef.current.hasChildNodes()
+    ) {
+      window.turnstile.render(turnstileWidgetRef.current, {
+        sitekey: "0x4AAAAAABeH0IacZo6bEcT8",
+        callback: (token) => {
+          setTurnstileToken(token);
+          setIsTurnstileReady(true);
+        },
+        "expired-callback": () => {
+          setTurnstileToken(null);
+          setIsTurnstileReady(false);
+        },
+        "error-callback": () => {
+          setTurnstileToken(null);
+          setIsTurnstileReady(false);
+        },
+      });
+    }
+  };
 
   const onSubmit = async (data) => {
     try {
+      if (!isTurnstileReady || !turnstileToken) {
+        alert("Vă rugăm să completați verificarea Turnstile");
+        return;
+      }
+
       const formData = new FormData();
 
       for (const key in data) {
@@ -29,10 +95,7 @@ export default function RepairForm() {
         }
       }
 
-      const token = document.querySelector(
-        'input[name="cf-turnstile-response"]'
-      )?.value;
-      if (token) formData.append("cf-turnstile-response", token);
+      formData.append("cf-turnstile-response", turnstileToken);
 
       const response = await fetch("/api/sendRepairRequest", {
         method: "POST",
@@ -40,7 +103,15 @@ export default function RepairForm() {
       });
 
       if (!response.ok) throw new Error("Eroare la trimiterea formularului");
+
       alert("Cererea a fost trimisă cu succes!");
+
+      // Reset Turnstile after successful submission
+      if (window.turnstile && turnstileWidgetRef.current) {
+        window.turnstile.reset(turnstileWidgetRef.current);
+        setTurnstileToken(null);
+        setIsTurnstileReady(false);
+      }
     } catch (err) {
       console.error(err);
       alert("A apărut o eroare. Încearcă din nou.");
@@ -235,14 +306,18 @@ export default function RepairForm() {
         </div>
       )}
 
-      {/* Turnstile */}
+      {/* Single Turnstile Widget Container */}
       <div
+        ref={turnstileWidgetRef}
         className="cf-turnstile d-flex justify-content-center mb-3"
-        data-sitekey="0x4AAAAAABdALOY-DswhxzbS"
       ></div>
 
-      {/* Submit */}
-      <button type="submit" className="btn btn-primary" disabled={isSubmitting}>
+      {/* Submit Button */}
+      <button
+        type="submit"
+        className="btn btn-primary"
+        disabled={isSubmitting || !isTurnstileReady}
+      >
         {isSubmitting && (
           <span
             className="spinner-border spinner-border-sm me-2"
