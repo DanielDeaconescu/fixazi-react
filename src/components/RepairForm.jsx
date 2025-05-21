@@ -119,6 +119,7 @@ export default function RepairForm() {
       // Close the modal
       const modalEl = document.getElementById("formModal");
       const modalInstance = Modal.getInstance(modalEl);
+      console.log(modalInstance);
       modalInstance.hide();
       navigate("/submitted");
 
