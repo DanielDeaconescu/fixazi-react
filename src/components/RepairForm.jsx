@@ -114,15 +114,23 @@ export default function RepairForm() {
         body: formData,
       });
 
-      const data = await response.json();
+      let data;
+      try {
+        data = await response.json();
+      } catch (error) {
+        console.error("Failed to parse JSON:", error);
+        alert("A apărut o eroare. Încearcă din nou.");
+        return;
+      }
 
-      if (data.reason === "limit-reached") {
+      // Check for specific error code
+      if (response.status === 429 && data.reason === "limit-reached") {
         alert("Ai atins limita de 3 trimiteri pe zi. Încearcă din nou mâine.");
       } else if (response.ok && data.success) {
         // Navigate to the submitted page
         navigate("/submitted");
 
-        // Close modal
+        // Close the modal
         const modalEl = document.getElementById("formModal");
         const modalInstance = Modal.getInstance(modalEl);
         modalInstance?.hide();
@@ -131,6 +139,7 @@ export default function RepairForm() {
           .querySelectorAll(".modal-backdrop")
           .forEach((el) => el.remove());
       } else {
+        console.error("Unexpected backend response:", data);
         alert("A apărut o eroare. Încearcă din nou.");
       }
 
