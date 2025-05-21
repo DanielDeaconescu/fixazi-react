@@ -20,7 +20,6 @@ export default function RepairForm() {
   const turnstileWidgetRef = useRef(null);
   const [isTurnstileReady, setIsTurnstileReady] = useState(false);
   const [turnstileToken, setTurnstileToken] = useState(null);
-  const [scriptLoaded, setScriptLoaded] = useState(false);
   const acceptContact = watch("acceptContact");
 
   useEffect(() => {
@@ -28,6 +27,9 @@ export default function RepairForm() {
     const existingScript = document.querySelector(
       'script[src="https://challenges.cloudflare.com/turnstile/v0/api.js"]'
     );
+
+    // Store the current ref value in a variable
+    const currentTurnstileRef = turnstileWidgetRef.current;
 
     if (existingScript) {
       // If script exists but Turnstile isn't loaded yet, wait for it
@@ -45,15 +47,14 @@ export default function RepairForm() {
     script.async = true;
     script.defer = true;
     script.onload = () => {
-      setScriptLoaded(true);
       initializeTurnstile();
     };
     document.body.appendChild(script);
 
     return () => {
       // Cleanup Turnstile widget when component unmounts
-      if (window.turnstile && turnstileWidgetRef.current) {
-        window.turnstile.remove(turnstileWidgetRef.current);
+      if (window.turnstile && currentTurnstileRef) {
+        window.turnstile.remove(currentTurnstileRef);
       }
     };
   }, []);

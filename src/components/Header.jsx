@@ -4,7 +4,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMessage, faSquareCheck } from "@fortawesome/free-solid-svg-icons";
 import RepairForm from "./RepairForm";
 import LogoFixAzi from "../assets/images/fixazi_logo.jpg";
-import { useState } from "react";
 
 const StyledHeader = styled.header`
   position: relative;
@@ -48,19 +47,7 @@ const StyledIcon = styled(FontAwesomeIcon)`
   margin-right: 0.5rem;
 `;
 
-const StyledLoadingSpinner = styled.span`
-  display: none;
-`;
-
 function Header() {
-  const [selectedFileName, setSelectedFileName] = useState("");
-  ``;
-
-  const handleFileChange = (event) => {
-    const file = event.target.files[0];
-    setSelectedFileName(file ? file.name : "");
-  };
-
   return (
     <>
       <StyledHeader className="header position-relative video-background">
