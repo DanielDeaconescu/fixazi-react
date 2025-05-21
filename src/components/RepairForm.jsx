@@ -111,18 +111,18 @@ export default function RepairForm() {
 
       const response = await fetch("/api/sendRepairRequest", {
         method: "POST",
-        body: formData, // No headers needed for FormData
+        body: formData,
       });
-
-      // if (!response.ok) throw new Error("Eroare la trimiterea formularului");
 
       const data = await response.json();
 
-      if (response.ok && data.success) {
+      if (data.reason === "limit-reached") {
+        alert("Ai atins limita de 3 trimiteri pe zi. Încearcă din nou mâine.");
+      } else if (response.ok && data.success) {
         // Navigate to the submitted page
         navigate("/submitted");
 
-        // Close the modal
+        // Close modal
         const modalEl = document.getElementById("formModal");
         const modalInstance = Modal.getInstance(modalEl);
         modalInstance?.hide();
@@ -130,8 +130,6 @@ export default function RepairForm() {
         document
           .querySelectorAll(".modal-backdrop")
           .forEach((el) => el.remove());
-      } else if (data.reason === "limit-reached") {
-        alert("Ai atins limita de 3 trimiteri pe zi. Încearcă din nou mâine.");
       } else {
         alert("A apărut o eroare. Încearcă din nou.");
       }
