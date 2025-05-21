@@ -120,6 +120,8 @@ export default function RepairForm() {
       const modalEl = document.getElementById("formModal");
       const modalInstance = Modal.getInstance(modalEl);
       modalInstance?.hide();
+      document.body.classList.remove("modal-open");
+      document.querySelectorAll(".modal-backdrop").forEach((el) => el.remove());
 
       navigate("/submitted");
 
