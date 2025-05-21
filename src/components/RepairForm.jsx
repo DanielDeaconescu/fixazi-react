@@ -117,7 +117,8 @@ export default function RepairForm() {
       console.log("Response data:", responseData);
 
       if (response.status === 429 && responseData.reason === "limit-reached") {
-        alert("Ai atins limita de 3 trimiteri pe zi. Încearcă din nou mâine.");
+        // alert("Ai atins limita de 3 trimiteri pe zi. Încearcă din nou mâine.");
+        navigate("/too-many-requests");
       } else if (response.ok && responseData.success) {
         navigate("/submitted");
         // Modal cleanup code...
