@@ -173,8 +173,6 @@ export default async function handler(req, res) {
       if (files.file && files.file[0] && files.file[0].size > 0) {
         await fs.promises.unlink(files.file[0].filepath).catch(console.error);
       }
-
-      res.status(200).json({ message: "Email sent successfully" });
     } catch (emailError) {
       console.error("Email sending failed:", emailError);
       // Clean up file if email fails
@@ -184,7 +182,10 @@ export default async function handler(req, res) {
       throw emailError;
     }
 
-    // ... (keep your existing submission storage and response code)
+    client.close();
+    res
+      .status(200)
+      .json({ success: true, message: "Form submitted successfully" });
   } catch (error) {
     console.error("Error processing form:", error);
     res.status(500).json({
