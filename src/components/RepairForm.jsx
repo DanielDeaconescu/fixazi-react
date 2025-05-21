@@ -114,16 +114,27 @@ export default function RepairForm() {
         body: formData, // No headers needed for FormData
       });
 
-      if (!response.ok) throw new Error("Eroare la trimiterea formularului");
+      // if (!response.ok) throw new Error("Eroare la trimiterea formularului");
 
-      // Close the modal
-      const modalEl = document.getElementById("formModal");
-      const modalInstance = Modal.getInstance(modalEl);
-      modalInstance?.hide();
-      document.body.classList.remove("modal-open");
-      document.querySelectorAll(".modal-backdrop").forEach((el) => el.remove());
+      const data = await response.json();
 
-      navigate("/submitted");
+      if (response.ok && data.success) {
+        // Navigate to the submitted page
+        navigate("/submitted");
+
+        // Close the modal
+        const modalEl = document.getElementById("formModal");
+        const modalInstance = Modal.getInstance(modalEl);
+        modalInstance?.hide();
+        document.body.classList.remove("modal-open");
+        document
+          .querySelectorAll(".modal-backdrop")
+          .forEach((el) => el.remove());
+      } else if (data.reason === "limit-reached") {
+        alert("Ai atins limita de 3 trimiteri pe zi. Încearcă din nou mâine.");
+      } else {
+        alert("A apărut o eroare. Încearcă din nou.");
+      }
 
       // Reset Turnstile after successful submission
       if (window.turnstile && turnstileWidgetRef.current) {
