@@ -1,7 +1,11 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faInstagram, faTiktok } from "@fortawesome/free-brands-svg-icons";
+import { faCircleInfo } from "@fortawesome/free-solid-svg-icons";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
+import RepairForm from "./RepairForm";
+import LogoFixAzi from "../assets/images/fixazi_logo.jpg";
+import TablePrices from "./TablePrices";
 
 const StyledIcon = styled(FontAwesomeIcon)``;
 
@@ -10,77 +14,181 @@ const StyledLink = styled(Link)`
   text-decoration: underline;
 `;
 
+const StyledAnchor = styled.a`
+  color: rgb(75, 192, 231);
+  text-decoration: underline;
+`;
+
 function Footer() {
   return (
-    <footer class="footer bg-secondary text-white py-6 footer-custom">
-      <div class="container">
-        <div class="row">
-          <div class="col-lg-4 my-3 d-flex flex-column align-items-start about-section-footer">
-            <h5>
-              Despre
-              <img src="./images/fixazi_logo_nobg.png" width="250" alt="" />
-            </h5>
-            <p>
-              La FIXAZI, ne dedicăm reparației rapide și de calitate a
-              dispozitivelor tale preferate. Indiferent dacă este vorba de un
-              telefon, tabletă sau laptop, ne asigurăm că primești servicii
-              profesionale, transparente și adaptate nevoilor tale.
-            </p>
-          </div>
+    <>
+      <footer class="footer bg-secondary text-white py-6 footer-custom">
+        <div class="container">
+          <div class="row">
+            <div class="col-lg-4 my-3 d-flex flex-column align-items-start about-section-footer">
+              <h5>
+                Despre
+                <img src="./images/fixazi_logo_nobg.png" width="250" alt="" />
+              </h5>
+              <p>
+                La FIXAZI, ne dedicăm reparației rapide și de calitate a
+                dispozitivelor tale preferate. Indiferent dacă este vorba de un
+                telefon, tabletă sau laptop, ne asigurăm că primești servicii
+                profesionale, transparente și adaptate nevoilor tale.
+              </p>
+            </div>
 
-          <div class="col-lg-4 my-3 d-flex flex-column align-items-start">
-            <h5>Link-uri utile</h5>
-            <ul class="list-unstyled">
-              <li>
-                <StyledLink to="/cookies">Politica de Cookies </StyledLink>
-              </li>
-              <li>
-                <a href="#" data-bs-toggle="modal" data-bs-target="#formModal">
-                  Cerere de reparație
-                </a>
-              </li>
-              <li>
+            <div class="col-lg-4 my-3 d-flex flex-column align-items-start">
+              <h5>Link-uri utile</h5>
+              <ul class="list-unstyled">
+                <li>
+                  <StyledLink to="/cookies">Politica de Cookies </StyledLink>
+                </li>
+                <li>
+                  <StyledAnchor
+                    href="#"
+                    data-bs-toggle="modal"
+                    data-bs-target="#formModal"
+                  >
+                    Cerere de reparație
+                  </StyledAnchor>
+                </li>
+                <li>
+                  <StyledAnchor
+                    href="#"
+                    data-bs-toggle="modal"
+                    data-bs-target="#repairPricesModal"
+                  >
+                    Vezi prețuri estimative
+                  </StyledAnchor>
+                </li>
+                <li class="footer-navigation d-flex gap-2">
+                  <div>Meniu de navigare:</div>
+                  <div className="d-flex gap-1">
+                    <StyledLink to="/">
+                      Acasă<span className="text-white">,</span>
+                    </StyledLink>
+                    <StyledLink to="/services">
+                      Servicii
+                      <span className="text-white">,</span>
+                    </StyledLink>
+                    <StyledLink to="/contact">Contact</StyledLink>
+                  </div>
+                </li>
+              </ul>
+            </div>
+
+            <div class="col-lg-4 my-3 d-flex flex-column align-items-start">
+              <div class="mb-4">
+                <h5>Rețele de socializare</h5>
                 <a
-                  href="#"
-                  data-bs-toggle="modal"
-                  data-bs-target="#repairPricesModal"
+                  href="https://www.instagram.com/fix_azi?utm_source=ig_web_button_share_sheet&amp;igsh=ZDNlZDc0MzIxNw=="
+                  target="_blank"
+                  class="text-decoration-none"
                 >
-                  Vezi prețuri estimative
+                  <StyledIcon
+                    icon={faInstagram}
+                    className="fa-3x text-light mx-2"
+                  />
                 </a>
-              </li>
-              <li class="footer-navigation d-flex gap-2">
-                <div>Meniu de navigare:</div>
-                <div className="d-flex gap-1">
-                  <StyledLink to="/">
-                    Acasă<span className="text-white">,</span>
-                  </StyledLink>
-                  <StyledLink to="/services">
-                    Servicii
-                    <span className="text-white">,</span>
-                  </StyledLink>
-                  <StyledLink to="/contact">Contact</StyledLink>
-                </div>
-              </li>
-            </ul>
+                <a
+                  href="https://www.facebook.com/FixAzi.GSM"
+                  target="_blank"
+                  class="text-decoration-none"
+                >
+                  <StyledIcon
+                    icon={faTiktok}
+                    className="fa-3x text-light mx-2"
+                  />
+                </a>
+              </div>
+            </div>
           </div>
+        </div>
+      </footer>
 
-          <div class="col-lg-4 my-3 d-flex flex-column align-items-start">
-            <div class="mb-4">
-              <h5>Rețele de socializare</h5>
-              <a href="#" class="text-decoration-none">
-                <StyledIcon
-                  icon={faInstagram}
-                  className="fa-3x text-light mx-2"
+      {/* Repair Form */}
+      <div
+        className="modal fade"
+        id="formModal"
+        tabIndex="-1"
+        aria-labelledby="exampleModalLabel"
+        aria-hidden="true"
+      >
+        <div className="modal-dialog">
+          <div className="modal-content">
+            <div className="modal-header bg-light">
+              <h5 className="modal-title" id="exampleModalLabel">
+                <img
+                  src={LogoFixAzi}
+                  width="200"
+                  alt="logo fixazi reparatii telefoane"
                 />
-              </a>
-              <a href="#" class="text-decoration-none">
-                <StyledIcon icon={faTiktok} className="fa-3x text-light mx-2" />
-              </a>
+              </h5>
+              <button
+                type="button"
+                className="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div className="modal-body bg-light">
+              <RepairForm />
             </div>
           </div>
         </div>
       </div>
-    </footer>
+
+      {/* Repair Prices Modal */}
+      <div
+        className="modal fade"
+        id="repairPricesModal"
+        tabIndex="-1"
+        aria-labelledby="exampleModalLabel"
+        aria-hidden="true"
+      >
+        <div className="modal-dialog modal-xl modal-dialog-centered">
+          <div className="modal-content">
+            <div className="modal-header bg-light">
+              <h5 className="modal-title" id="exampleModalLabel">
+                <img
+                  src={LogoFixAzi}
+                  width="200"
+                  alt="logo fixazi reparatii telefoane"
+                />
+              </h5>
+              <button
+                type="button"
+                className="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div className="modal-body bg-light">
+              <h4>Prețuri Estimative pentru Reparații</h4>
+              <p class="text-muted">
+                <small>
+                  <StyledIcon icon={faCircleInfo} />
+                  Prețurile sunt estimative și pot varia în funcție de
+                  diagnostic și de specificul situației.
+                </small>
+              </p>
+              <TablePrices />
+            </div>
+
+            <div class="modal-footer bg-light">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                data-bs-dismiss="modal"
+              >
+                Închide
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </>
   );
 }
 

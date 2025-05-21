@@ -286,7 +286,7 @@ export default function RepairForm() {
       {/* File Upload */}
       <div className="custom-file-upload mb-3">
         <label
-          className="custom-file-label"
+          className="custom-file-label me-2"
           onClick={handleFileLabelClick}
           style={{ cursor: "pointer" }}
         >

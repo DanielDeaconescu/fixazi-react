@@ -1,5 +1,5 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faInstagram, faTiktok } from "@fortawesome/free-brands-svg-icons";
+import { faInstagram, faFacebook } from "@fortawesome/free-brands-svg-icons";
 import styled from "styled-components";
 
 const StyledCallToActionSection = styled.section`
@@ -29,7 +29,7 @@ function CallToActionIndex() {
         {/* Social Media Icons */}
         <div className="d-flex justify-content-center gap-4">
           <a
-            href="https://www.instagram.com/yourpage"
+            href="https://www.instagram.com/fix_azi?utm_source=ig_web_button_share_sheet&amp;igsh=ZDNlZDc0MzIxNw=="
             target="_blank"
             rel="noopener noreferrer"
             className="text-white fs-3"
@@ -37,12 +37,12 @@ function CallToActionIndex() {
             <FontAwesomeIcon icon={faInstagram} />
           </a>
           <a
-            href="https://www.tiktok.com/@yourpage"
+            href="https://www.facebook.com/FixAzi.GSM"
             target="_blank"
             rel="noopener noreferrer"
             className="text-white fs-3"
           >
-            <FontAwesomeIcon icon={faTiktok} />
+            <FontAwesomeIcon icon={faFacebook} />
           </a>
         </div>
       </div>

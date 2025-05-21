@@ -3,7 +3,7 @@ import styled from "styled-components";
 import navbarLogo from "../assets/images/fixazi_logo_nobg.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircle } from "@fortawesome/free-solid-svg-icons";
-import { faInstagram, faTiktok } from "@fortawesome/free-brands-svg-icons";
+import { faInstagram, faFacebook } from "@fortawesome/free-brands-svg-icons";
 
 const CustomNavigation = styled.nav`
   border-bottom: 2px solid white;
@@ -95,17 +95,25 @@ function Navbar() {
             </li>
           </ul>
           <span className="nav-item d-flex align-items-center ms-2">
-            <a href="https://facebook.com" target="_blank" rel="noreferrer">
+            <a
+              href="https://www.facebook.com/FixAzi.GSM"
+              target="_blank"
+              rel="noreferrer"
+            >
               <IconStack>
                 <StackedIcon icon={faCircle} />
                 <TopIcon icon={faInstagram} />
               </IconStack>
             </a>
 
-            <a href="https://www.tiktok.com" target="_blank" rel="noreferrer">
+            <a
+              href="https://www.instagram.com/fix_azi?utm_source=ig_web_button_share_sheet&amp;igsh=ZDNlZDc0MzIxNw=="
+              target="_blank"
+              rel="noreferrer"
+            >
               <IconStack>
                 <StackedIcon icon={faCircle} />
-                <TopIcon icon={faTiktok} />
+                <TopIcon icon={faFacebook} />
               </IconStack>
             </a>
           </span>

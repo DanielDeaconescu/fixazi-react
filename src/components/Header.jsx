@@ -169,7 +169,6 @@ function Header() {
               <h4>Prețuri Estimative pentru Reparații</h4>
               <p class="text-muted">
                 <small>
-                  {/* <i class="fa-solid fa-circle-info"></i> */}
                   <StyledIcon icon={faCircleInfo} />
                   Prețurile sunt estimative și pot varia în funcție de
                   diagnostic și de specificul situației.
