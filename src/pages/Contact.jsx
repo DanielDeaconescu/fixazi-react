@@ -1,3 +1,4 @@
+import ContactCTA from "../components/ContactCTA";
 import ContactMiddleSection from "../components/ContactMiddleSection";
 import HeaderContact from "../components/HeaderContact";
 import ServicesReviews from "../components/ServicesReviews";
@@ -8,6 +9,7 @@ function Contact() {
       <HeaderContact />
       <ContactMiddleSection />
       <ServicesReviews />
+      <ContactCTA />
     </>
   );
 }
