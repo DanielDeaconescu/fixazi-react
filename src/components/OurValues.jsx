@@ -28,9 +28,18 @@ const StyledValuesContainer = styled.div`
   align-items: center;
 `;
 
+const StyledOurValues = styled.section`
+  @media (max-width: 576px) {
+    font-size: 1.35rem;
+  }
+`;
+
 function OurValues() {
   return (
-    <section id="expertise" className="expertise bg-secondary py-5 text-white">
+    <StyledOurValues
+      id="expertise"
+      className="expertise bg-secondary py-5 text-white"
+    >
       <div className="container">
         <StyledValuesContainer className="mb-5 our-values-container">
           <h2 className="fw-bold text-center">Valorile noastre</h2>
@@ -45,7 +54,7 @@ function OurValues() {
 
         <div className="row">
           {/* Transparență */}
-          <div className="col-md-3">
+          <div className="col-sm-12 col-md-6 col-lg-3">
             <div className="card bg-transparent border-0 text-center mb-3">
               <div className="card-image">
                 <StyledIcon icon={faEye} />
@@ -61,7 +70,7 @@ function OurValues() {
           </div>
 
           {/* Promptitudine */}
-          <div className="col-md-3">
+          <div className="col-sm-12 col-md-6 col-lg-3">
             <div className="card bg-transparent border-0 text-center mb-3">
               <div className="card-image">
                 <StyledIcon icon={faStopwatch} />
@@ -77,7 +86,7 @@ function OurValues() {
           </div>
 
           {/* Responsabilitate */}
-          <div className="col-md-3">
+          <div className="col-sm-12 col-md-6 col-lg-3">
             <div className="card bg-transparent border-0 text-center mb-3">
               <div className="card-image">
                 <StyledIcon icon={faShieldAlt} />
@@ -93,7 +102,7 @@ function OurValues() {
           </div>
 
           {/* Calitate */}
-          <div className="col-md-3">
+          <div className="col-sm-12 col-md-6 col-lg-3">
             <div className="card bg-transparent border-0 text-center mb-3">
               <div className="card-image">
                 <StyledIcon icon={faStar} />
@@ -109,7 +118,7 @@ function OurValues() {
           </div>
         </div>
       </div>
-    </section>
+    </StyledOurValues>
   );
 }
 

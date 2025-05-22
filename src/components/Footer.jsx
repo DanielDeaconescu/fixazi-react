@@ -24,11 +24,18 @@ const StyledFooter = styled.footer`
     padding: 3rem 0 !important;
     font-size: 1.25rem;
   }
+
+  @media (min-width: 576px) and (max-width: 768px) {
+    font-size: 1.4rem;
+  }
 `;
 
 const FooterStyledParagraph = styled.p`
   /* font-size: 1.25rem; */
   text-align: justify;
+  @media (min-width: 576px) and (max-width: 768px) {
+    width: 75%;
+  }
 `;
 
 const FooterNavigation = styled.li`
