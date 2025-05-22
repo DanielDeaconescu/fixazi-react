@@ -7,6 +7,10 @@ const StyledCreatedBy = styled.div`
   padding: 0.5rem;
   background-color: black;
   color: white;
+
+  @media (max-width: 576px) {
+    font-size: 1.1rem;
+  }
 `;
 
 const StyledParagraph = styled.p`

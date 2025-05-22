@@ -57,16 +57,22 @@ const StyledIcon = styled(FontAwesomeIcon)`
 `;
 
 const IndexHeaderButtons = styled.div`
-  flex-direction: column;
-  gap: 0.5rem !important;
+  @media (max-width: 576px) {
+    flex-direction: column;
+    gap: 0.5rem !important;
+  }
 `;
 
 const StyledContentInner = styled.div`
-  padding-top: 0rem !important;
+  @media (max-width: 576px) {
+    padding-top: 0rem !important;
+  }
 `;
 
 const StyledH1 = styled.h1`
-  margin-top: 1rem !important;
+  @media (max-width: 576px) {
+    margin-top: 1rem !important;
+  }
 `;
 
 function HeaderHome() {
