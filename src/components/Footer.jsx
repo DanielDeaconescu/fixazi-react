@@ -28,6 +28,7 @@ const StyledFooter = styled.footer`
 
 const FooterStyledParagraph = styled.p`
   /* font-size: 1.25rem; */
+  text-align: justify;
 `;
 
 const FooterNavigation = styled.li`
