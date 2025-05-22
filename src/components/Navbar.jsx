@@ -15,6 +15,11 @@ const CustomNavigation = styled.nav`
     height: unset;
     padding: 0.75rem 0;
   }
+
+  @media (min-width: 576px) and (max-width: 768px) {
+    height: unset;
+    padding: 0.75rem 0;
+  }
 `;
 
 const StyledLink = styled(Link)`

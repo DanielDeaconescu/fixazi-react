@@ -22,10 +22,10 @@ const StyledAnchor = styled.a`
 function Footer() {
   return (
     <>
-      <footer class="footer bg-secondary text-white py-6 footer-custom">
-        <div class="container">
-          <div class="row">
-            <div class="col-lg-4 my-3 d-flex flex-column align-items-start about-section-footer">
+      <footer className="footer bg-secondary text-white py-6 footer-custom">
+        <div className="container">
+          <div className="row">
+            <div className="col-lg-4 my-3 d-flex flex-column align-items-start about-section-footer">
               <h5>
                 Despre
                 <img src="./images/fixazi_logo_nobg.png" width="250" alt="" />
@@ -38,9 +38,9 @@ function Footer() {
               </p>
             </div>
 
-            <div class="col-lg-4 my-3 d-flex flex-column align-items-start">
+            <div className="col-lg-4 my-3 d-flex flex-column align-items-start">
               <h5>Link-uri utile</h5>
-              <ul class="list-unstyled">
+              <ul className="list-unstyled">
                 <li>
                   <StyledLink to="/cookies">Politica de Cookies </StyledLink>
                 </li>
@@ -62,7 +62,7 @@ function Footer() {
                     Vezi prețuri estimative
                   </StyledAnchor>
                 </li>
-                <li class="footer-navigation d-flex gap-2">
+                <li className="footer-navigation d-flex gap-2">
                   <div>Meniu de navigare:</div>
                   <div className="d-flex gap-1">
                     <StyledLink to="/">
@@ -78,13 +78,13 @@ function Footer() {
               </ul>
             </div>
 
-            <div class="col-lg-4 my-3 d-flex flex-column align-items-start">
-              <div class="mb-4">
+            <div className="col-lg-4 my-3 d-flex flex-column align-items-start">
+              <div className="mb-4">
                 <h5>Rețele de socializare</h5>
                 <a
                   href="https://www.instagram.com/fix_azi?utm_source=ig_web_button_share_sheet&amp;igsh=ZDNlZDc0MzIxNw=="
                   target="_blank"
-                  class="text-decoration-none"
+                  className="text-decoration-none"
                 >
                   <StyledIcon
                     icon={faInstagram}
@@ -94,7 +94,7 @@ function Footer() {
                 <a
                   href="https://www.facebook.com/FixAzi.GSM"
                   target="_blank"
-                  class="text-decoration-none"
+                  className="text-decoration-none"
                 >
                   <StyledIcon
                     icon={faTiktok}
@@ -166,7 +166,7 @@ function Footer() {
             </div>
             <div className="modal-body bg-light">
               <h4>Prețuri Estimative pentru Reparații</h4>
-              <p class="text-muted">
+              <p className="text-muted">
                 <small>
                   <StyledIcon icon={faCircleInfo} />
                   Prețurile sunt estimative și pot varia în funcție de
@@ -176,10 +176,10 @@ function Footer() {
               <TablePrices />
             </div>
 
-            <div class="modal-footer bg-light">
+            <div className="modal-footer bg-light">
               <button
                 type="button"
-                class="btn btn-secondary"
+                className="btn btn-secondary"
                 data-bs-dismiss="modal"
               >
                 Închide

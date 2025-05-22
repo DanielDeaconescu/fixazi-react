@@ -21,7 +21,7 @@ const StyledAnchor = styled.a`
 function CreatedBy() {
   return (
     <StyledCreatedBy>
-      <StyledParagraph class="text-white created-by-p">
+      <StyledParagraph className="text-white created-by-p">
         <span className="me-1">Website realizat de</span>
         <StyledAnchor href="https://danieldeaconescu.com/" target="_blank">
           Daniel Dev

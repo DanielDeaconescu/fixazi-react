@@ -167,7 +167,7 @@ function HeaderHome() {
             </div>
             <div className="modal-body bg-light">
               <h4>Prețuri Estimative pentru Reparații</h4>
-              <p class="text-muted">
+              <p className="text-muted">
                 <small>
                   <StyledIcon icon={faCircleInfo} />
                   Prețurile sunt estimative și pot varia în funcție de
@@ -177,10 +177,10 @@ function HeaderHome() {
               <TablePrices />
             </div>
 
-            <div class="modal-footer bg-light">
+            <div className="modal-footer bg-light">
               <button
                 type="button"
-                class="btn btn-secondary"
+                className="btn btn-secondary"
                 data-bs-dismiss="modal"
               >
                 Închide
