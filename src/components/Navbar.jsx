@@ -4,6 +4,7 @@ import navbarLogo from "../assets/images/fixazi_logo_nobg.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircle } from "@fortawesome/free-solid-svg-icons";
 import { faInstagram, faFacebook } from "@fortawesome/free-brands-svg-icons";
+import { useEffect } from "react";
 
 const CustomNavigation = styled.nav`
   border-bottom: 2px solid white;
