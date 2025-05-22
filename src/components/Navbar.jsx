@@ -102,7 +102,7 @@ function Navbar() {
           </ul>
           <span className="nav-item d-flex align-items-center ms-2">
             <a
-              href="https://www.facebook.com/FixAzi.GSM"
+              href="https://www.instagram.com/fix_azi?utm_source=ig_web_button_share_sheet&amp;igsh=ZDNlZDc0MzIxNw=="
               target="_blank"
               rel="noreferrer"
             >
@@ -113,7 +113,7 @@ function Navbar() {
             </a>
 
             <a
-              href="https://www.instagram.com/fix_azi?utm_source=ig_web_button_share_sheet&amp;igsh=ZDNlZDc0MzIxNw=="
+              href="https://www.facebook.com/FixAzi.GSM"
               target="_blank"
               rel="noreferrer"
             >
