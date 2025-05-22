@@ -52,6 +52,11 @@ const StyledIcon = styled(FontAwesomeIcon)`
   margin-right: 0.5rem;
 `;
 
+const IndexHeaderButtons = styled.div`
+  flex-direction: column;
+  gap: 0.5rem !important;
+`;
+
 function HeaderHome() {
   return (
     <>
@@ -85,7 +90,7 @@ function HeaderHome() {
                   Laptop-uri
                 </li>
               </StyledList>
-              <div className="index-header-buttons d-flex gap-3">
+              <IndexHeaderButtons className="index-header-buttons d-flex gap-3">
                 <a
                   href="#"
                   className="btn btn-primary index-header-prices text-white"
@@ -102,7 +107,7 @@ function HeaderHome() {
                 >
                   Vezi prețuri estimative
                 </a>
-              </div>
+              </IndexHeaderButtons>
             </div>
           </StyledContent>
         </div>
