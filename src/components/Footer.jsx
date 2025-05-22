@@ -19,10 +19,33 @@ const StyledAnchor = styled.a`
   text-decoration: underline;
 `;
 
+const StyledFooter = styled.footer`
+  @media (max-width: 576px) {
+    padding: 3rem 0 !important;
+    font-size: 1.25rem;
+  }
+`;
+
+const FooterStyledParagraph = styled.p`
+  /* font-size: 1.25rem; */
+`;
+
+const FooterNavigation = styled.li`
+  @media (max-width: 576px) {
+    flex-direction: column;
+  }
+`;
+
+const UsefulLinks = styled.ul`
+  @media (max-width: 576px) {
+    margin-bottom: 1rem !important;
+  }
+`;
+
 function Footer() {
   return (
     <>
-      <footer className="footer bg-secondary text-white py-6 footer-custom">
+      <StyledFooter className="footer bg-secondary text-white py-6 footer-custom">
         <div className="container">
           <div className="row">
             <div className="col-lg-4 my-3 d-flex flex-column align-items-start about-section-footer">
@@ -30,17 +53,17 @@ function Footer() {
                 Despre
                 <img src="./images/fixazi_logo_nobg.png" width="250" alt="" />
               </h5>
-              <p>
+              <FooterStyledParagraph>
                 La FIXAZI, ne dedicăm reparației rapide și de calitate a
                 dispozitivelor tale preferate. Indiferent dacă este vorba de un
                 telefon, tabletă sau laptop, ne asigurăm că primești servicii
                 profesionale, transparente și adaptate nevoilor tale.
-              </p>
+              </FooterStyledParagraph>
             </div>
 
             <div className="col-lg-4 my-3 d-flex flex-column align-items-start">
               <h5>Link-uri utile</h5>
-              <ul className="list-unstyled">
+              <UsefulLinks className="list-unstyled">
                 <li>
                   <StyledLink to="/cookies">Politica de Cookies </StyledLink>
                 </li>
@@ -62,20 +85,20 @@ function Footer() {
                     Vezi prețuri estimative
                   </StyledAnchor>
                 </li>
-                <li className="footer-navigation d-flex gap-2">
-                  <div>Meniu de navigare:</div>
-                  <div className="d-flex gap-1">
-                    <StyledLink to="/">
-                      Acasă<span className="text-white">,</span>
-                    </StyledLink>
-                    <StyledLink to="/services">
-                      Servicii
-                      <span className="text-white">,</span>
-                    </StyledLink>
-                    <StyledLink to="/contact">Contact</StyledLink>
-                  </div>
-                </li>
-              </ul>
+              </UsefulLinks>
+              <FooterNavigation className="footer-navigation d-flex gap-2">
+                <div>Meniu de navigare:</div>
+                <div className="d-flex gap-1">
+                  <StyledLink to="/">
+                    Acasă<span className="text-white">,</span>
+                  </StyledLink>
+                  <StyledLink to="/services">
+                    Servicii
+                    <span className="text-white">,</span>
+                  </StyledLink>
+                  <StyledLink to="/contact">Contact</StyledLink>
+                </div>
+              </FooterNavigation>
             </div>
 
             <div className="col-lg-4 my-3 d-flex flex-column align-items-start">
@@ -105,7 +128,7 @@ function Footer() {
             </div>
           </div>
         </div>
-      </footer>
+      </StyledFooter>
 
       {/* Repair Form */}
       <div

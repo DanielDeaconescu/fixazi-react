@@ -7,11 +7,19 @@ const StyledCallToActionSection = styled.section`
   border-bottom: 2px solid white;
 `;
 
+const StyledIndexCTA = styled.h2`
+  @media (max-width: 576px) {
+    font-size: 1.5rem;
+  }
+`;
+
 function CallToActionIndex() {
   return (
     <StyledCallToActionSection className="bg-dark text-white call-to-action-section text-center py-5">
       <div className="container">
-        <h2 className="mb-3">Ai o problemă cu dispozitivul tău?</h2>
+        <StyledIndexCTA className="mb-3">
+          Ai o problemă cu dispozitivul tău?
+        </StyledIndexCTA>
         <p className="lead mb-4 call-to-action-paragraph">
           Solicită o reparație de încredere - simplu și rapid!
         </p>
