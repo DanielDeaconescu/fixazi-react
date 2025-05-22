@@ -1,4 +1,5 @@
 import HeaderServices from "../components/HeaderServices";
+import ServicesCallToAction from "../components/ServicesCallToAction";
 import ServicesOurServices from "../components/ServicesOurServices";
 
 function Services() {
@@ -6,6 +7,7 @@ function Services() {
     <>
       <HeaderServices />
       <ServicesOurServices />
+      <ServicesCallToAction />
     </>
   );
 }
