@@ -5,6 +5,9 @@ import {
   faChevronUp,
   faChevronDown,
   faMapMarkerAlt,
+  faCopy,
+  faPhone,
+  faEnvelope,
 } from "@fortawesome/free-solid-svg-icons";
 
 // Styled components with chevron icons
@@ -28,6 +31,15 @@ const AccordionItem = styled.div`
 const StyledAnchor = styled.a`
   text-decoration: underline;
   color: hsl(195, 77%, 60%);
+`;
+
+const StyledAnchor1 = styled.a`
+  color: hsl(195, 77%, 60%) !important;
+
+  &:hover {
+    color: hsl(195, 77%, 40%) !important;
+  }
+  /* background-color: red; */
 `;
 
 const AccordionHeader = styled.h5`
@@ -343,17 +355,17 @@ const ContactMiddleSection = () => {
             <h2 className="mb-4">Date de contact</h2>
             <ul className="list-unstyled mb-4">
               <ContactDataItem className="mb-2">
-                <a
+                <StyledAnchor1
                   className="text-decoration-none"
                   href="https://maps.app.goo.gl/DjjqwmbCwaBL1BBr5"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  <StyledIcon icon={faMapMarkerAlt} />
+                  <StyledIcon icon={faMapMarkerAlt} className="me-2" />
                   <span id="address">
                     Str. 1 Decembrie 1918 Nr. 8, Galați 800258
                   </span>
-                </a>
+                </StyledAnchor1>
                 <CopyButton
                   onClick={() =>
                     copyToClipboard(
@@ -362,26 +374,29 @@ const ContactMiddleSection = () => {
                   }
                   className="ms-3 btn-sm btn btn-outline-primary"
                 >
-                  <i className="fa-solid fa-copy"></i>
+                  <StyledIcon icon={faCopy} className="me-2" />
                   Copiază
                 </CopyButton>
               </ContactDataItem>
               <ContactDataItem className="mb-2">
-                <i className="fas fa-phone me-2 text-primary"></i>
-                <a href="tel:+40743352949" className="text-decoration-none">
-                  +40 743 352 949
-                </a>
+                <StyledAnchor1
+                  href="tel:+40743352949"
+                  className="text-decoration-none"
+                >
+                  <StyledIcon icon={faPhone} className="me-2" />
+                  0743 352 949
+                </StyledAnchor1>
               </ContactDataItem>
               <ContactDataItem className="mb-2">
-                <i className="fas fa-envelope me-2 text-primary"></i>
-                <a
+                <StyledAnchor1
                   href="mailto:dangsmsrl@gmail.com"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-decoration-none"
                 >
+                  <StyledIcon icon={faEnvelope} className="me-2" />
                   dangsmsrl@gmail.com
-                </a>
+                </StyledAnchor1>
               </ContactDataItem>
             </ul>
 

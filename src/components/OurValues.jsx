@@ -9,6 +9,7 @@ import {
 
 const StyledParagraph = styled.p`
   text-align: justify;
+  max-width: 70%;
 `;
 
 const StyledIcon = styled(FontAwesomeIcon)`
@@ -21,11 +22,17 @@ const StyledValuesParagraph = styled.p`
   text-align: center;
 `;
 
+const StyledValuesContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
+
 function OurValues() {
   return (
     <section id="expertise" className="expertise bg-secondary py-5 text-white">
       <div className="container">
-        <div className="mb-5 our-values-container">
+        <StyledValuesContainer className="mb-5 our-values-container">
           <h2 className="fw-bold text-center">Valorile noastre</h2>
           <StyledParagraph className="our-values-paragraph">
             La FIXAZI, nu ne concentrăm doar pe reparații rapide și eficiente,
@@ -34,7 +41,7 @@ function OurValues() {
             ne ghidează în fiecare interacțiune și în fiecare intervenție
             tehnică.
           </StyledParagraph>
-        </div>
+        </StyledValuesContainer>
 
         <div className="row">
           {/* Transparență */}
