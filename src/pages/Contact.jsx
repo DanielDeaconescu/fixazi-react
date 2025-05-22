@@ -1,5 +1,13 @@
+import ContactMiddleSection from "../components/ContactMiddleSection";
+import HeaderContact from "../components/HeaderContact";
+
 function Contact() {
-  return <div></div>;
+  return (
+    <>
+      <HeaderContact />
+      <ContactMiddleSection />
+    </>
+  );
 }
 
 export default Contact;
