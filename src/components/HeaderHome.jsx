@@ -14,6 +14,10 @@ const StyledHeader = styled.header`
   position: relative;
   overflow: hidden;
   height: 600px;
+
+  @media (max-width: 576px) {
+    max-height: 400px;
+  }
 `;
 
 const StyledVideo = styled.video`
@@ -57,6 +61,14 @@ const IndexHeaderButtons = styled.div`
   gap: 0.5rem !important;
 `;
 
+const StyledContentInner = styled.div`
+  padding-top: 0rem !important;
+`;
+
+const StyledH1 = styled.h1`
+  margin-top: 1rem !important;
+`;
+
 function HeaderHome() {
   return (
     <>
@@ -68,13 +80,13 @@ function HeaderHome() {
           </StyledVideo>
           <StyledOverlay className="overlay"></StyledOverlay>
           <StyledContent className="content">
-            <div className="pt-5 d-flex flex-column align-items-start repair-services-container">
-              <h1 className="mt-5 d-flex flex-column header-title subtitle-custom">
+            <StyledContentInner className="pt-5 d-flex flex-column align-items-start repair-services-container">
+              <StyledH1 className="mt-5 d-flex flex-column header-title subtitle-custom">
                 Servicii de reparații
                 <span className="text-primary fw-bold">
                   rapide și calitative
                 </span>
-              </h1>
+              </StyledH1>
               <p className="lead">Servicii de reparații</p>
               <StyledList className="d-flex flex-column list-unstyled p-0 header-list-custom">
                 <li>
@@ -108,7 +120,7 @@ function HeaderHome() {
                   Vezi prețuri estimative
                 </a>
               </IndexHeaderButtons>
-            </div>
+            </StyledContentInner>
           </StyledContent>
         </div>
       </StyledHeader>
