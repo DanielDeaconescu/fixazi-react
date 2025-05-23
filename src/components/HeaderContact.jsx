@@ -8,6 +8,10 @@ const StyledHeader = styled.header`
   height: 350px;
   display: flex;
   align-items: center;
+
+  @media (max-width: 576px) {
+    height: 280px;
+  }
 `;
 
 const StyledVideo = styled.video`
@@ -39,6 +43,10 @@ const StyledOverlay = styled.div`
 
 const ServicesParagraph = styled.p`
   max-width: 70%;
+
+  @media (max-width: 576px) {
+    max-width: 90%;
+  }
 `;
 
 function HeaderServices() {

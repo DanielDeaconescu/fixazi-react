@@ -8,6 +8,10 @@ const ReviewsSection = styled.section`
   background-color: var(--bs-dark); // Or your specific background color
   border-top: 2px solid white;
   border-bottom: 2px solid white;
+
+  @media (max-width: 576px) {
+    padding: 1.5rem 0;
+  }
 `;
 
 const SectionTitle = styled.h2`
@@ -22,6 +26,10 @@ const ReviewCard = styled(Card)`
   flex-direction: column;
   background-color: white;
   box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+
+  @media (max-width: 576px) {
+    font-size: 1.25rem;
+  }
 `;
 
 const CardBody = styled(Card.Body)`

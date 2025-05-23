@@ -15,6 +15,10 @@ const StyledIcon = styled(FontAwesomeIcon)``;
 
 const StyledSection = styled.section`
   background-color: #343a40;
+
+  @media (max-width: 576px) {
+    padding: 1.5rem 0 !important;
+  }
 `;
 
 const AccordionItem = styled.div`
@@ -64,6 +68,10 @@ const AccordionButton = styled.button`
   &:focus {
     box-shadow: none;
   }
+
+  @media (max-width: 576px) {
+    font-size: 1rem;
+  }
 `;
 
 const ChevronIcon = styled.span`
@@ -107,6 +115,12 @@ const ContactDataItem = styled.li`
       color: #0d6efd;
     }
   }
+
+  @media (max-width: 576px) {
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: flex-start;
+  }
 `;
 
 const CopyButton = styled.button`
@@ -119,6 +133,12 @@ const CopyButton = styled.button`
 
   &:active {
     transform: translateY(0);
+  }
+`;
+
+const StyledAccordion = styled.div`
+  @media (max-width: 576px) {
+    padding-bottom: 1rem;
   }
 `;
 
@@ -137,7 +157,7 @@ const ContactMiddleSection = () => {
     <StyledSection className="py-5">
       <div className="container">
         <div className="row">
-          <div className="col-lg-6">
+          <StyledAccordion className="col-lg-6">
             <section className="container">
               <h2 className="mb-4 text-white">Întrebări frecvente</h2>
               <div className="accordion text-white" id="faqAccordion">
@@ -349,7 +369,7 @@ const ContactMiddleSection = () => {
                 </AccordionItem>
               </div>
             </section>
-          </div>
+          </StyledAccordion>
 
           <div className="col-lg-6 text-white">
             <h2 className="mb-4">Date de contact</h2>
