@@ -137,7 +137,6 @@ const SendButton = styled.button`
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  /* transition: background 0.2s; */
 
   &:hover {
     background: #2563eb;
@@ -243,7 +242,7 @@ export default function ChatWidget() {
               type="text"
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              onKeyPress={(e) => e.key === "Enter" && sendMessage()}
+              onKeyDown={(e) => e.key === "Enter" && sendMessage()}
               placeholder="Scrie mesajul tău..."
             />
             <SendButton onClick={sendMessage} disabled={!input.trim()}>
