@@ -6,6 +6,7 @@ import navbarLogo from "../assets/images/fixazi_logo_nobg.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircle } from "@fortawesome/free-solid-svg-icons";
 import { faInstagram, faFacebook } from "@fortawesome/free-brands-svg-icons";
+import { useAuthStore } from "../store/authStore";
 
 const CustomNavigation = styled(BootstrapNavbar)`
   height: 80px;
@@ -33,6 +34,18 @@ const StyledLink = styled(Link)`
   &:hover {
     background-color: white;
     color: #000;
+  }
+`;
+
+const LoginLink = styled(StyledLink)`
+  background-color: #3b82f6;
+  border-radius: 4px;
+  margin-left: 0.5rem;
+  padding: 0.5rem 1rem !important;
+
+  &:hover {
+    background-color: #2563eb !important;
+    color: white !important;
   }
 `;
 
@@ -149,6 +162,9 @@ function Navbar() {
     };
   }, [expanded]);
 
+  // Add this to check auth state
+  const { user } = useAuthStore();
+
   return (
     <CustomNavigation
       ref={navbarRef}
@@ -158,7 +174,7 @@ function Navbar() {
       onToggle={() => setExpanded(!expanded)}
     >
       <StyledContainer>
-        <BootstrapNavbar.Brand href="#">
+        <BootstrapNavbar.Brand as={Link} to="/">
           <img src={navbarLogo} alt="" width="250" />
         </BootstrapNavbar.Brand>
 
@@ -187,6 +203,21 @@ function Navbar() {
                 Contact
               </StyledLink>
             </StyledNavItemRegular>
+
+            {/* Add Login/Admin Link */}
+            {!user ? (
+              <StyledNavItemRegular>
+                <LoginLink to="/login" onClick={() => setExpanded(false)}>
+                  Admin Login
+                </LoginLink>
+              </StyledNavItemRegular>
+            ) : (
+              <StyledNavItemRegular>
+                <LoginLink to="/admin" onClick={() => setExpanded(false)}>
+                  Admin Panel
+                </LoginLink>
+              </StyledNavItemRegular>
+            )}
 
             <StyledNavItem className="ms-2 d-flex">
               <a
