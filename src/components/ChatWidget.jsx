@@ -137,7 +137,7 @@ const SendButton = styled.button`
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: background 0.2s;
+  /* transition: background 0.2s; */
 
   &:hover {
     background: #2563eb;
@@ -222,7 +222,7 @@ export default function ChatWidget() {
       {isOpen ? (
         <ChatWindow>
           <ChatHeader>
-            <span>Customer Support</span>
+            <span>Asistență Clienți</span>
             <CloseButton onClick={() => setIsOpen(false)}>
               <FiX size={20} />
             </CloseButton>
@@ -244,7 +244,7 @@ export default function ChatWidget() {
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyPress={(e) => e.key === "Enter" && sendMessage()}
-              placeholder="Type your message..."
+              placeholder="Scrie mesajul tău..."
             />
             <SendButton onClick={sendMessage} disabled={!input.trim()}>
               <FiSend size={16} />
