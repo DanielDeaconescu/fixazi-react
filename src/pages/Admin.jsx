@@ -2,181 +2,139 @@ import { useEffect, useState } from "react";
 import { supabase } from "../lib/supabaseClient";
 import { FiLogOut, FiSend, FiMessageSquare } from "react-icons/fi";
 import { useAuthStore } from "../store/authStore";
-import styled from "styled-components";
 import toast, { Toaster } from "react-hot-toast";
+import {
+  Container,
+  Row,
+  Col,
+  Card,
+  ListGroup,
+  Badge,
+  Form,
+  InputGroup,
+  Button,
+  Stack,
+} from "react-bootstrap";
+import styled from "styled-components";
 
-// Styled Components
-const MessagesContainer = styled.div`
+// Styled components with better visibility
+const AdminContainer = styled(Container)`
+  max-width: 1400px;
+  margin: 20px auto;
+  height: calc(100vh - 40px);
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+`;
+
+const SidebarCard = styled(Card)`
+  height: 100%;
+  border-right: 1px solid #dee2e6;
+  background-color: #fff;
+`;
+
+const SidebarHeader = styled(Card.Header)`
+  background-color: #f1f3f5;
+  border-bottom: 1px solid #dee2e6;
+  font-weight: 600;
+  padding: 12px 16px;
+`;
+
+const RoomItem = styled(ListGroup.Item)`
+  padding: 12px 16px;
+  border-left: 3px solid
+    ${(props) => (props.$active ? "#0d6efd" : "transparent")};
+  background-color: ${(props) => (props.$active ? "#e9ecef" : "#fff")};
+  cursor: pointer;
+  transition: all 0.2s;
+
+  &:hover {
+    background-color: #f1f3f5;
+  }
+`;
+
+const ChatContainer = styled.div`
   display: flex;
   flex-direction: column;
+  height: 100%;
+  background-color: #fff;
+`;
+
+const MessagesArea = styled.div`
   flex: 1;
-  padding: 1rem;
   overflow-y: auto;
-  background-color: #0f172a;
-  max-height: 60vh;
+  padding: 16px;
+  background-color: #f8f9fa;
 `;
 
 const MessageBubble = styled.div`
-  max-width: 80%;
-  padding: 0.75rem 1rem;
-  margin-bottom: 0.75rem;
-  border-radius: 1rem;
+  max-width: 70%;
+  padding: 10px 14px;
+  margin-bottom: 12px;
+  border-radius: 8px;
   font-size: 0.95rem;
   line-height: 1.4;
   word-break: break-word;
-  position: relative;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
 
   ${({ $isCustomer, $unread }) => {
     if ($isCustomer) {
       return $unread
         ? `
-          background: #4b5563;
-          color: #e2e8f0;
-          align-self: flex-start;
-          border-left: 3px solid #3b82f6;
+          background: #e9ecef;
+          color: #212529;
+          border-left: 3px solid #0d6efd;
         `
         : `
-          background: #334155;
-          color: #e2e8f0;
-          align-self: flex-start;
+          background: #e9ecef;
+          color: #212529;
         `;
     } else {
       return `
-        background: #3b82f6;
+        background: #0d6efd;
         color: white;
-        align-self: flex-end;
       `;
     }
   }}
 `;
 
-const UnreadIndicator = styled.span`
-  position: absolute;
-  left: -8px;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 8px;
-  height: 8px;
-  background-color: #3b82f6;
-  border-radius: 50%;
-`;
-
-const AdminContainer = styled.div`
-  display: flex;
-  height: 100vh;
-  background-color: #0f172a;
-  color: #e2e8f0;
-`;
-
-const Sidebar = styled.div`
-  width: 280px;
-  background-color: #1e293b;
-  border-right: 1px solid #334155;
-  display: flex;
-  flex-direction: column;
-`;
-
-const SidebarHeader = styled.div`
-  padding: 1rem;
-  border-bottom: 1px solid #334155;
-  font-weight: 600;
-  font-size: 1.1rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-`;
-
-const LogoutButton = styled.button`
-  background: transparent;
-  border: none;
-  color: #f87171;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: 0.9rem;
-
-  &:hover {
-    color: #ef4444;
-  }
-`;
-
-const RoomList = styled.div`
-  overflow-y: auto;
-  flex: 1;
-`;
-
-const RoomItem = styled.div`
-  padding: 1rem;
-  cursor: pointer;
-  border-bottom: 1px solid #334155;
-  transition: background-color 0.2s;
-  background-color: ${({ $active }) => ($active ? "#334155" : "transparent")};
-
-  &:hover {
-    background-color: #334155;
-  }
-`;
-
-const RoomName = styled.div`
-  font-weight: 500;
-  color: #f8fafc;
-  margin-bottom: 0.25rem;
-`;
-
-const RoomMeta = styled.div`
-  font-size: 0.8rem;
-  color: #94a3b8;
-`;
-
-const ChatArea = styled.div`
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-`;
-
 const InputContainer = styled.div`
-  padding: 1rem;
-  border-top: 1px solid #334155;
-  background-color: #1e293b;
-  display: flex;
-  gap: 0.5rem;
+  padding: 16px;
+  background-color: #fff;
+  border-top: 1px solid #dee2e6;
+  position: sticky;
+  bottom: 0;
 `;
 
-const MessageInput = styled.input`
-  flex: 1;
-  padding: 0.75rem 1rem;
-  border-radius: 1.5rem;
-  border: 1px solid #334155;
-  background-color: #0f172a;
-  color: #e2e8f0;
-  outline: none;
-  font-size: 0.95rem;
+const StyledInput = styled(Form.Control)`
+  border-radius: 20px;
+  padding: 10px 16px;
+  border: 1px solid #ced4da;
 
   &:focus {
-    border-color: #3b82f6;
+    border-color: #86b7fe;
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
   }
 `;
 
-const SendButton = styled.button`
-  background-color: #3b82f6;
-  color: white;
-  border: none;
-  border-radius: 50%;
-  width: 44px;
-  height: 44px;
+const SendButton = styled(Button)`
+  border-radius: 20px;
+  width: auto;
+  padding: 8px 16px;
   display: flex;
   align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: background-color 0.2s;
+  gap: 6px;
+  background-color: #0d6efd;
+  border: none;
+  transition: all 0.2s;
 
   &:hover {
-    background-color: #2563eb;
+    background-color: #0b5ed7;
   }
 
   &:disabled {
-    background-color: #64748b;
+    background-color: #6c757d;
     cursor: not-allowed;
   }
 `;
@@ -187,18 +145,8 @@ const EmptyState = styled.div`
   align-items: center;
   justify-content: center;
   height: 100%;
-  color: #94a3b8;
-  gap: 1rem;
-`;
-
-// Add this styled component for unread badges
-const UnreadBadge = styled.span`
-  background-color: hsl(195, 77%, 60%);
-  color: white;
-  border-radius: 50%;
-  padding: 0.1rem 0.4rem;
-  font-size: 0.7rem;
-  margin-left: 0.5rem;
+  color: #6c757d;
+  gap: 12px;
 `;
 
 export default function Admin() {
@@ -373,70 +321,120 @@ export default function Admin() {
   return (
     <>
       <Toaster />
-      <AdminContainer>
-        <Sidebar>
-          <SidebarHeader>
-            Conversații
-            <LogoutButton onClick={logout}>
-              <FiLogOut /> Deconectare
-            </LogoutButton>
-          </SidebarHeader>
-          <RoomList>
-            {rooms.map((room) => (
-              <RoomItem
-                key={room}
-                onClick={() => loadRoom(room)}
-                $active={activeRoom === room}
-              >
-                <RoomName>
-                  {room.startsWith("room_") ? "Anonymous" : "Customer"}
-                  {unreadCounts[room] > 0 && (
-                    <UnreadBadge>{unreadCounts[room]}</UnreadBadge>
-                  )}
-                </RoomName>
-                <RoomMeta>{room}</RoomMeta>
-              </RoomItem>
-            ))}
-          </RoomList>
-        </Sidebar>
+      <AdminContainer fluid>
+        <Row className="g-0 h-100">
+          {/* Sidebar - 30% width */}
+          <Col md={4} lg={3} className="h-100">
+            <SidebarCard>
+              <SidebarHeader className="d-flex justify-content-between align-items-center">
+                <span>Conversații</span>
+                <Button
+                  variant="button"
+                  className="text-danger p-0 d-flex align-items-center"
+                  onClick={logout}
+                >
+                  Deconectare
+                  <FiLogOut className="ms-2" size={18} />
+                </Button>
+              </SidebarHeader>
+              <Card.Body className="p-0 overflow-auto">
+                <ListGroup variant="flush">
+                  {rooms.map((room) => (
+                    <RoomItem
+                      key={room}
+                      $active={activeRoom === room}
+                      onClick={() => loadRoom(room)}
+                    >
+                      <Stack direction="horizontal" gap={2}>
+                        <div className="me-auto">
+                          <div className="d-flex align-items-center">
+                            {unreadCounts[room] > 0 && (
+                              <span
+                                className="me-2"
+                                style={{
+                                  width: "8px",
+                                  height: "8px",
+                                  backgroundColor: "#0d6efd",
+                                  borderRadius: "50%",
+                                  display: "inline-block",
+                                }}
+                              ></span>
+                            )}
+                            <span className="fw-bold">
+                              {room.startsWith("room_")
+                                ? "Anonymous"
+                                : "Customer"}
+                            </span>
+                          </div>
+                          <small className="text-muted">{room}</small>
+                        </div>
+                        {unreadCounts[room] > 0 && (
+                          <Badge bg="primary" pill>
+                            {unreadCounts[room]}
+                          </Badge>
+                        )}
+                      </Stack>
+                    </RoomItem>
+                  ))}
+                </ListGroup>
+              </Card.Body>
+            </SidebarCard>
+          </Col>
 
-        <ChatArea>
-          {activeRoom ? (
-            <>
-              <MessagesContainer>
-                {messages.map((msg) => (
-                  <MessageBubble
-                    key={msg.id}
-                    $isCustomer={msg.is_from_customer}
-                    $unread={!msg.is_read && msg.is_from_customer}
-                  >
-                    {msg.content}
-                    {!msg.is_read && msg.is_from_customer && (
-                      <UnreadIndicator />
-                    )}
-                  </MessageBubble>
-                ))}
-              </MessagesContainer>
-              <InputContainer>
-                <MessageInput
-                  type="text"
-                  value={input}
-                  onChange={(e) => setInput(e.target.value)}
-                  onKeyPress={(e) => e.key === "Enter" && sendMessage()}
-                  placeholder="Scrie răspunsul..."
-                />
-                <SendButton onClick={sendMessage} disabled={!input.trim()}>
-                  <FiSend size={18} />
-                </SendButton>
-              </InputContainer>
-            </>
-          ) : (
-            <EmptyState>
-              <FiMessageSquare size={48} />
-              <div>Alegeți o conversație pentru a vedea mesajele</div>
-            </EmptyState>
-          )}
-        </ChatArea>
+          {/* Chat Area - 70% width */}
+          <Col md={8} lg={9} className="h-100">
+            <ChatContainer>
+              {activeRoom ? (
+                <>
+                  <MessagesArea>
+                    {messages.map((msg) => (
+                      <div
+                        key={msg.id}
+                        className={`d-flex mb-2 ${
+                          msg.is_from_customer
+                            ? "justify-content-start"
+                            : "justify-content-end"
+                        }`}
+                      >
+                        <MessageBubble
+                          $isCustomer={msg.is_from_customer}
+                          $unread={!msg.is_read && msg.is_from_customer}
+                        >
+                          {msg.content}
+                        </MessageBubble>
+                      </div>
+                    ))}
+                  </MessagesArea>
+
+                  <InputContainer>
+                    <InputGroup>
+                      <StyledInput
+                        type="text"
+                        value={input}
+                        onChange={(e) => setInput(e.target.value)}
+                        onKeyPress={(e) => e.key === "Enter" && sendMessage()}
+                        placeholder="Scrie răspunsul..."
+                      />
+                      <SendButton
+                        variant="primary"
+                        onClick={sendMessage}
+                        disabled={!input.trim()}
+                      >
+                        <FiSend size={16} />
+                        <span>Trimite</span>
+                      </SendButton>
+                    </InputGroup>
+                  </InputContainer>
+                </>
+              ) : (
+                <EmptyState>
+                  <FiMessageSquare size={48} />
+                  <div>Alegeți o conversație pentru a vedea mesajele</div>
+                </EmptyState>
+              )}
+            </ChatContainer>
+          </Col>
+        </Row>
       </AdminContainer>
     </>
   );
