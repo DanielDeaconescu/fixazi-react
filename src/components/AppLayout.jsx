@@ -5,6 +5,7 @@ import styled from "styled-components";
 import CreatedBy from "./CreatedBy";
 import SideButtons from "./SideButtons";
 import BottomNavigation from "./BottomNavigation";
+import ChatWidget from "./ChatWidget";
 
 const LayoutWrapper = styled.div`
   display: flex;
@@ -25,6 +26,7 @@ function AppLayout({ children }) {
       <CreatedBy />
       <SideButtons />
       <BottomNavigation />
+      <ChatWidget />
     </LayoutWrapper>
   );
 }
