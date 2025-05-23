@@ -7,11 +7,13 @@ import toast, { Toaster } from "react-hot-toast";
 
 // Styled Components
 const MessagesContainer = styled.div`
+  display: flex;
+  flex-direction: column;
   flex: 1;
   padding: 1rem;
   overflow-y: auto;
   background-color: #0f172a;
-  max-height: 70vh; /* Added max-height */
+  max-height: 60vh; /* Added max-height */
 `;
 
 const MessageBubble = styled.div`
@@ -189,6 +191,16 @@ const EmptyState = styled.div`
   gap: 1rem;
 `;
 
+// Add this styled component for unread badges
+const UnreadBadge = styled.span`
+  background-color: hsl(195, 77%, 60%);
+  color: white;
+  border-radius: 50%;
+  padding: 0.1rem 0.4rem;
+  font-size: 0.7rem;
+  margin-left: 0.5rem;
+`;
+
 export default function Admin() {
   const [activeRoom, setActiveRoom] = useState(null);
   const [rooms, setRooms] = useState([]);
@@ -197,7 +209,7 @@ export default function Admin() {
   const { user, logout } = useAuthStore();
   const [unreadCounts, setUnreadCounts] = useState({});
   const [unreadMessages, setUnreadMessages] = useState({});
-  const [newConversations, setNewConversations] = useState({}); // Add this at the top of your component
+  const [newConversations, setNewConversations] = useState({});
 
   const loadRoom = async (roomId) => {
     setActiveRoom(roomId);
@@ -278,13 +290,9 @@ export default function Admin() {
               }));
 
               toast.success(
-                `New message from ${
-                  payload.new.room_id.startsWith("room_")
-                    ? "Anonymous"
-                    : "Customer"
-                }`,
+                `Ai primit un nou mesaj de la un vizitator fixazi.com!`,
                 {
-                  position: "top-right",
+                  position: "top-center",
                   duration: 5000,
                 }
               );
@@ -368,9 +376,9 @@ export default function Admin() {
       <AdminContainer>
         <Sidebar>
           <SidebarHeader>
-            Chat Rooms
+            Conversații
             <LogoutButton onClick={logout}>
-              <FiLogOut /> Logout
+              <FiLogOut /> Deconectare
             </LogoutButton>
           </SidebarHeader>
           <RoomList>
@@ -415,7 +423,7 @@ export default function Admin() {
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   onKeyPress={(e) => e.key === "Enter" && sendMessage()}
-                  placeholder="Type your reply..."
+                  placeholder="Scrie răspunsul..."
                 />
                 <SendButton onClick={sendMessage} disabled={!input.trim()}>
                   <FiSend size={18} />
@@ -425,7 +433,7 @@ export default function Admin() {
           ) : (
             <EmptyState>
               <FiMessageSquare size={48} />
-              <div>Select a chat room to start conversation</div>
+              <div>Alegeți o conversație pentru a vedea mesajele</div>
             </EmptyState>
           )}
         </ChatArea>
@@ -433,13 +441,3 @@ export default function Admin() {
     </>
   );
 }
-
-// Add this styled component for unread badges
-const UnreadBadge = styled.span`
-  background-color: #3b82f6;
-  color: white;
-  border-radius: 50%;
-  padding: 0.1rem 0.4rem;
-  font-size: 0.7rem;
-  margin-left: 0.5rem;
-`;
