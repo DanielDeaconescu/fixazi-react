@@ -1,4 +1,4 @@
-// components/AppLayout.jsx
+import { useLocation } from "react-router-dom";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
 import styled from "styled-components";
@@ -10,7 +10,6 @@ import ChatWidget from "./ChatWidget";
 const LayoutWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  /* min-height: 100vh; */
 `;
 
 const Main = styled.main`
@@ -18,6 +17,9 @@ const Main = styled.main`
 `;
 
 function AppLayout({ children }) {
+  const { pathname } = useLocation(); // Get current path
+  const hideChatWidget = ["/login", "/admin"].includes(pathname);
+
   return (
     <LayoutWrapper>
       <Navbar />
@@ -26,7 +28,8 @@ function AppLayout({ children }) {
       <CreatedBy />
       <SideButtons />
       <BottomNavigation />
-      <ChatWidget />
+      {!hideChatWidget && <ChatWidget />}{" "}
+      {/* Only show if not on /login or /admin */}
     </LayoutWrapper>
   );
 }

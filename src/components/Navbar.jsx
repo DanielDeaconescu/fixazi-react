@@ -38,14 +38,12 @@ const StyledLink = styled(Link)`
 `;
 
 const LoginLink = styled(StyledLink)`
-  background-color: #3b82f6;
-  border-radius: 4px;
   margin-left: 0.5rem;
   padding: 0.5rem 1rem !important;
 
   &:hover {
-    background-color: #2563eb !important;
-    color: white !important;
+    background-color: white !important;
+    color: black !important;
   }
 `;
 
@@ -208,13 +206,13 @@ function Navbar() {
             {!user ? (
               <StyledNavItemRegular>
                 <LoginLink to="/login" onClick={() => setExpanded(false)}>
-                  Admin Login
+                  Admin
                 </LoginLink>
               </StyledNavItemRegular>
             ) : (
               <StyledNavItemRegular>
                 <LoginLink to="/admin" onClick={() => setExpanded(false)}>
-                  Admin Panel
+                  Admin
                 </LoginLink>
               </StyledNavItemRegular>
             )}
