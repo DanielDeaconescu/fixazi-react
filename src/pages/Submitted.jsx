@@ -23,8 +23,8 @@ const StyledIcon = styled(FontAwesomeIcon)``;
 function Submitted() {
   return (
     <StyledSection className="bg-dark d-flex justify-content-center align-items-center">
-      <div className="d-flex flex-column align-items-center text-center p-4 bg-dark rounded shadow-lg">
-        <Logo />
+      <div className="d-flex flex-column align-items-center text-center bg-dark rounded shadow-lg">
+        {/* <Logo /> */}
         <h1 className="mb-3 text-success">
           <StyledIcon icon={faEnvelopeCircleCheck} className="me-2" />
           Cererea ta a fost trimisă!
