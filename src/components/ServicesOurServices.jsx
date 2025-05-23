@@ -12,6 +12,11 @@ import {
 const StyledSection = styled.section`
   border-top: 2px solid white;
   border-bottom: 2px solid white;
+
+  @media (max-width: 576px) {
+    padding: 1.5rem 0 !important;
+    font-size: 1.25rem;
+  }
 `;
 
 const StyledCard = styled.div`
@@ -24,6 +29,12 @@ const StyledIcon = styled(FontAwesomeIcon)`
 
 const StyledParagraph = styled.p`
   max-width: 70%;
+
+  @media (max-width: 576px) {
+    max-width: 80%;
+
+    margin-bottom: 1.5rem !important;
+  }
 `;
 
 const StyledSubsection = styled.div`
@@ -33,12 +44,20 @@ const StyledSubsection = styled.div`
   align-items: center;
 `;
 
+const StyledTitle = styled.h2`
+  @media (max-width: 576px) {
+    font-size: 2rem;
+  }
+`;
+
 function ServicesOurServices() {
   return (
     <StyledSection className="py-5">
       <div className="container">
         <StyledSubsection className="our-services-subsection">
-          <h2 className="text-center mb-4 text-white">Serviciile Noastre</h2>
+          <StyledTitle className="text-center mb-4 text-white">
+            Serviciile Noastre
+          </StyledTitle>
           <StyledParagraph className="text-center mb-5 text-white our-services-subsection-p">
             Oferim o gamă variată de servicii de reparații pentru dispozitivele
             tale. Fie că este vorba de un telefon spart, o tabletă care nu mai
@@ -51,7 +70,7 @@ function ServicesOurServices() {
             <StyledCard className="card h-100 shadow-sm bg-light">
               <div className="card-body text-center">
                 <StyledIcon icon={faMobileAlt} size="2x" className="mb-3" />
-                <h5 className="card-title">Reparații telefoane</h5>
+                <h5 className="card-title fw-bold">Reparații telefoane</h5>
                 <p className="card-text">
                   Înlocuire ecran, baterie, port de încărcare, reparații
                   software și multe altele.
@@ -64,7 +83,7 @@ function ServicesOurServices() {
             <StyledCard className="card h-100 shadow-sm bg-light">
               <div className="card-body text-center">
                 <StyledIcon icon={faTabletAlt} size="2x" className="mb-3" />
-                <h5 className="card-title">Reparații tablete</h5>
+                <h5 className="card-title fw-bold">Reparații tablete</h5>
                 <p className="card-text">
                   Rezolvăm probleme hardware și software, pentru toate mărcile
                   populare.
@@ -77,7 +96,7 @@ function ServicesOurServices() {
             <StyledCard className="card h-100 shadow-sm bg-light">
               <div className="card-body text-center">
                 <StyledIcon icon={faLaptop} size="2x" className="mb-3" />
-                <h5 className="card-title">Reparații laptopuri</h5>
+                <h5 className="card-title fw-bold">Reparații laptopuri</h5>
                 <p className="card-text">
                   Curățare internă, upgrade SSD/RAM, reinstalare sistem,
                   reparații placă de bază.
@@ -90,7 +109,7 @@ function ServicesOurServices() {
             <StyledCard className="card h-100 shadow-sm bg-light">
               <div className="card-body text-center">
                 <StyledIcon icon={faShieldAlt} size="2x" className="mb-3" />
-                <h5 className="card-title">Diagnosticare gratuită</h5>
+                <h5 className="card-title fw-bold">Diagnosticare gratuită</h5>
                 <p className="card-text">
                   Îți oferim o evaluare gratuită a defectului înainte de orice
                   intervenție.
@@ -103,7 +122,7 @@ function ServicesOurServices() {
             <StyledCard className="card h-100 shadow-sm bg-light">
               <div className="card-body text-center">
                 <StyledIcon icon={faSyncAlt} size="2x" className="mb-3" />
-                <h5 className="card-title">Recuperare date</h5>
+                <h5 className="card-title fw-bold">Recuperare date</h5>
                 <p className="card-text">
                   Recuperăm date pierdute de pe dispozitive defecte, carduri SD
                   sau hard disk-uri.
@@ -116,7 +135,7 @@ function ServicesOurServices() {
             <StyledCard className="card h-100 shadow-sm bg-light">
               <div className="card-body text-center">
                 <StyledIcon icon={faCogs} size="2x" className="mb-3" />
-                <h5 className="card-title">Servicii personalizate</h5>
+                <h5 className="card-title fw-bold">Servicii personalizate</h5>
                 <p className="card-text">
                   Contactează-ne pentru soluții adaptate nevoilor tale
                   specifice.

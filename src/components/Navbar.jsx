@@ -72,7 +72,6 @@ const WhiteNavbarToggle = styled(BootstrapNavbar.Toggle)`
 `;
 
 const StyledBootstrapCollapse = styled(BootstrapNavbar.Collapse)`
-  height: 100%;
   @media (max-width: 768px) {
     background-color: rgb(0, 0, 0);
     padding: 1rem;
@@ -88,6 +87,10 @@ const StyledBootstrapCollapse = styled(BootstrapNavbar.Collapse)`
     overflow: hidden;
     visibility: ${(props) => (props.expanded ? "visible" : "hidden")};
     opacity: ${(props) => (props.expanded ? "1" : "0")};
+  }
+
+  @media (min-width: 768px) {
+    height: 100%;
   }
 `;
 

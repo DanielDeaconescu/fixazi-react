@@ -13,7 +13,13 @@ import TablePrices from "./TablePrices";
 const StyledHeader = styled.header`
   position: relative;
   overflow: hidden;
-  /* height: 600px; */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  @media (max-width: 576px) {
+    height: 450px;
+    padding: 0.25rem !important;
+  }
 `;
 
 const StyledVideo = styled.video`
@@ -54,6 +60,10 @@ const StyledIcon = styled(FontAwesomeIcon)`
 
 const ServicesParagraph = styled.p`
   max-width: 70%;
+
+  @media (max-width: 576px) {
+    max-width: 80%;
+  }
 `;
 
 function HeaderServices() {
