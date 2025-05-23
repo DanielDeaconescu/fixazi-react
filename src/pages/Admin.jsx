@@ -13,7 +13,7 @@ const MessagesContainer = styled.div`
   padding: 1rem;
   overflow-y: auto;
   background-color: #0f172a;
-  max-height: 60vh; /* Added max-height */
+  max-height: 60vh;
 `;
 
 const MessageBubble = styled.div`
@@ -64,8 +64,8 @@ const UnreadIndicator = styled.span`
 const AdminContainer = styled.div`
   display: flex;
   height: 100vh;
-  background-color: #0f172a; /* Dark background */
-  color: #e2e8f0; /* Light text */
+  background-color: #0f172a;
+  color: #e2e8f0;
 `;
 
 const Sidebar = styled.div`

@@ -2,14 +2,16 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuthStore } from "../store/authStore";
 import styled from "styled-components";
+import Logo from "../components/Logo";
 
 // Styled Components
 const LoginContainer = styled.div`
   min-height: 100vh;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  background-color: #0f172a; /* Dark blue-gray background */
+  background-color: #0f172a;
 `;
 
 const LoginCard = styled.div`
@@ -100,8 +102,9 @@ export default function Login() {
 
   return (
     <LoginContainer>
+      <Logo />
       <LoginCard>
-        <Title>Admin Login</Title>
+        <Title>Autentificare Administrator</Title>
         {error && <ErrorMessage>{error}</ErrorMessage>}
         <Form onSubmit={handleSubmit}>
           <Input
@@ -115,10 +118,10 @@ export default function Login() {
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            placeholder="Password"
+            placeholder="Parolă"
             required
           />
-          <SubmitButton type="submit">Login</SubmitButton>
+          <SubmitButton type="submit">Autentificare</SubmitButton>
         </Form>
       </LoginCard>
     </LoginContainer>
