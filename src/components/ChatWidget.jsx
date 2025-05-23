@@ -7,8 +7,8 @@ import styled from "styled-components";
 // Styled Components
 const ChatContainer = styled.div`
   position: fixed;
-  bottom: 24px;
-  right: 24px;
+  bottom: 20%;
+  right: 20px;
   z-index: 1000;
 `;
 
