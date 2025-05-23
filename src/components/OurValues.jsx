@@ -30,7 +30,7 @@ const StyledValuesContainer = styled.div`
 
 const StyledOurValues = styled.section`
   @media (max-width: 576px) {
-    font-size: 1.35rem;
+    font-size: 1.2rem;
   }
 `;
 
