@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { supabase } from "../lib/supabaseClient";
-import { FiLogOut, FiSend, FiMessageSquare } from "react-icons/fi";
+import { FiLogOut, FiSend, FiMessageSquare, FiPhone } from "react-icons/fi";
 import { useAuthStore } from "../store/authStore";
 import toast, { Toaster } from "react-hot-toast";
 import {
@@ -10,14 +10,12 @@ import {
   Card,
   ListGroup,
   Badge,
-  Form,
-  InputGroup,
   Button,
   Stack,
 } from "react-bootstrap";
 import styled from "styled-components";
 
-// Styled components with better visibility
+// Styled components
 const AdminContainer = styled(Container)`
   max-width: 1400px;
   margin: 20px auto;
@@ -57,7 +55,7 @@ const RoomItem = styled(ListGroup.Item)`
 const ChatContainer = styled.div`
   display: flex;
   flex-direction: column;
-  height: 100%;
+  height: 70vh;
   background-color: #fff;
 `;
 
@@ -107,10 +105,11 @@ const InputContainer = styled.div`
   bottom: 0;
 `;
 
-const StyledInput = styled(Form.Control)`
+const StyledInput = styled.input`
   border-radius: 20px;
   padding: 10px 16px;
   border: 1px solid #ced4da;
+  width: 100%;
 
   &:focus {
     border-color: #86b7fe;
@@ -128,6 +127,7 @@ const SendButton = styled(Button)`
   background-color: #0d6efd;
   border: none;
   transition: all 0.2s;
+  color: white;
 
   &:hover {
     background-color: #0b5ed7;
@@ -157,12 +157,13 @@ export default function Admin() {
   const { user, logout } = useAuthStore();
   const [unreadCounts, setUnreadCounts] = useState({});
   const [unreadMessages, setUnreadMessages] = useState({});
-  const [newConversations, setNewConversations] = useState({});
+  const [visitorProfiles, setVisitorProfiles] = useState({});
+  const [isLoading, setIsLoading] = useState(true);
 
   const loadRoom = async (roomId) => {
     setActiveRoom(roomId);
 
-    // Clear unread counts and indicators for this room
+    // Clear unread counts for this room
     setUnreadCounts((prev) => ({ ...prev, [roomId]: 0 }));
     setUnreadMessages((prev) => {
       const newUnreads = { ...prev };
@@ -183,23 +184,69 @@ export default function Admin() {
       .from("messages")
       .update({ is_read: true })
       .eq("room_id", roomId)
-      .eq("is_read", false);
+      .eq("is_read", false)
+      .eq("is_from_customer", true);
   };
 
-  // Fetch all chat rooms
+  // Fetch all chat rooms and visitor profiles
   useEffect(() => {
-    const fetchRooms = async () => {
+    const fetchInitialData = async () => {
       try {
+        // Load visitor profiles first
+        const { data: profiles } = await supabase
+          .from("visitor_profiles")
+          .select("*")
+          .order("created_at", { ascending: false });
+
+        const profilesMap = profiles?.reduce((acc, profile) => {
+          acc[profile.room_id] = profile;
+          return acc;
+        }, {});
+        setVisitorProfiles(profilesMap || {});
+
+        // Get rooms from both messages and visitor profiles
         const { data: roomsData } = await supabase
           .from("messages")
           .select("room_id, created_at")
           .order("created_at", { ascending: false });
 
-        const uniqueRooms = [
-          ...new Set(roomsData?.map((item) => item.room_id) || []),
-        ];
-        setRooms(uniqueRooms);
+        // Combine rooms from messages and visitor profiles
+        const messageRooms = roomsData?.map((item) => item.room_id) || [];
+        const profileRooms = profiles?.map((profile) => profile.room_id) || [];
 
+        // Create unique rooms list, prioritizing those with messages
+        const allRooms = [...new Set([...messageRooms, ...profileRooms])];
+
+        // Sort rooms by latest activity (either message or profile creation)
+        const sortedRooms = allRooms.sort((a, b) => {
+          const aMessageTime = roomsData?.find(
+            (r) => r.room_id === a
+          )?.created_at;
+          const aProfileTime = profiles?.find(
+            (p) => p.room_id === a
+          )?.created_at;
+          const bMessageTime = roomsData?.find(
+            (r) => r.room_id === b
+          )?.created_at;
+          const bProfileTime = profiles?.find(
+            (p) => p.room_id === b
+          )?.created_at;
+
+          const aLatest =
+            aMessageTime && aProfileTime
+              ? Math.max(new Date(aMessageTime), new Date(aProfileTime))
+              : new Date(aMessageTime || aProfileTime);
+          const bLatest =
+            bMessageTime && bProfileTime
+              ? Math.max(new Date(bMessageTime), new Date(bProfileTime))
+              : new Date(bMessageTime || bProfileTime);
+
+          return bLatest - aLatest;
+        });
+
+        setRooms(sortedRooms);
+
+        // Load unread counts
         const { data: unreadData } = await supabase
           .from("messages")
           .select("room_id")
@@ -211,14 +258,17 @@ export default function Admin() {
           counts[room_id] = (counts[room_id] || 0) + 1;
         });
         setUnreadCounts(counts);
+
+        setIsLoading(false);
       } catch (error) {
-        console.error("Error fetching rooms:", error);
+        console.error("Error fetching initial data:", error);
+        setIsLoading(false);
       }
     };
 
-    fetchRooms();
+    fetchInitialData();
 
-    // Subscribe to new rooms
+    // Set up real-time subscriptions
     const roomChannel = supabase
       .channel("rooms_changes")
       .on(
@@ -229,34 +279,62 @@ export default function Admin() {
           table: "messages",
         },
         (payload) => {
-          if (payload.new.is_from_customer) {
-            // Mark as new conversation if not the currently active room
-            if (payload.new.room_id !== activeRoom) {
-              setNewConversations((prev) => ({
-                ...prev,
-                [payload.new.room_id]: true,
-              }));
+          if (
+            payload.new.is_from_customer &&
+            payload.new.room_id !== activeRoom
+          ) {
+            toast.success(`Mesaj nou de la un vizitator fixazi.com!`, {
+              position: "top-center",
+              duration: 5000,
+            });
 
-              toast.success(
-                `Ai primit un nou mesaj de la un vizitator fixazi.com!`,
-                {
-                  position: "top-center",
-                  duration: 5000,
-                }
-              );
-            }
+            // Update unread counts immediately
+            setUnreadCounts((prev) => ({
+              ...prev,
+              [payload.new.room_id]: (prev[payload.new.room_id] || 0) + 1,
+            }));
           }
-          fetchRooms(); // Refresh room list
+          fetchInitialData();
+        }
+      )
+      .subscribe();
+
+    const visitorChannel = supabase
+      .channel("visitor_profiles_changes")
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "visitor_profiles",
+        },
+        (payload) => {
+          setVisitorProfiles((prev) => ({
+            ...prev,
+            [payload.new.room_id]: payload.new,
+          }));
+
+          // Also refresh the rooms list to include new visitors
+          fetchInitialData();
+
+          // Show notification for new visitor
+          if (payload.eventType === "INSERT") {
+            toast.success(`Vizitator nou: ${payload.new.name}`, {
+              position: "top-center",
+              duration: 5000,
+            });
+          }
         }
       )
       .subscribe();
 
     return () => {
       supabase.removeChannel(roomChannel);
+      supabase.removeChannel(visitorChannel);
     };
   }, [activeRoom]);
 
-  // Updated message subscription
+  // Message subscription for active room
   useEffect(() => {
     if (!activeRoom) return;
 
@@ -274,28 +352,12 @@ export default function Admin() {
           const newMessage = payload.new;
           setMessages((prev) => [...prev, newMessage]);
 
+          // Only mark as read if it's from customer and we're viewing this room
           if (newMessage.is_from_customer) {
-            // Show toast
-            toast.success(
-              `New message from ${
-                activeRoom.startsWith("room_") ? "Anonymous" : "Customer"
-              }`,
-              { position: "top-right" }
-            );
-
-            // Mark as read if in current room
-            if (activeRoom === newMessage.room_id) {
-              supabase
-                .from("messages")
-                .update({ is_read: true })
-                .eq("id", newMessage.id);
-            } else {
-              // Track unread messages per room
-              setUnreadMessages((prev) => ({
-                ...prev,
-                [newMessage.room_id]: (prev[newMessage.room_id] || 0) + 1,
-              }));
-            }
+            supabase
+              .from("messages")
+              .update({ is_read: true })
+              .eq("id", newMessage.id);
           }
         }
       )
@@ -318,6 +380,59 @@ export default function Admin() {
     if (!error) setInput("");
   };
 
+  const renderRoomList = () => {
+    if (isLoading) {
+      return (
+        <div className="p-3 text-center">
+          <div className="spinner-border text-primary" role="status">
+            <span className="visually-hidden">Loading...</span>
+          </div>
+        </div>
+      );
+    }
+
+    return rooms.map((room) => {
+      const visitor = visitorProfiles[room];
+      const unreadCount = unreadCounts[room] || 0;
+
+      return (
+        <RoomItem
+          key={room}
+          $active={activeRoom === room}
+          onClick={() => loadRoom(room)}
+        >
+          <div className="d-flex flex-column w-100">
+            <div className="d-flex align-items-center">
+              {unreadCount > 0 && <span className="unread-dot me-2" />}
+              <span className="fw-bold text-truncate">
+                {visitor?.name || "Vizitator nou"}
+              </span>
+              {unreadCount > 0 && (
+                <Badge bg="primary" pill className="ms-2">
+                  {unreadCount}
+                </Badge>
+              )}
+            </div>
+
+            {visitor ? (
+              <>
+                <small className="text-muted mt-1 text-truncate">
+                  <FiPhone size={12} className="me-1" />
+                  {visitor.phone}
+                </small>
+                <small className="text-muted mt-1 text-truncate">
+                  ID: {room}
+                </small>
+              </>
+            ) : (
+              <small className="text-muted mt-1">Detalii indisponibile</small>
+            )}
+          </div>
+        </RoomItem>
+      );
+    });
+  };
+
   return (
     <>
       <Toaster />
@@ -338,45 +453,7 @@ export default function Admin() {
                 </Button>
               </SidebarHeader>
               <Card.Body className="p-0 overflow-auto">
-                <ListGroup variant="flush">
-                  {rooms.map((room) => (
-                    <RoomItem
-                      key={room}
-                      $active={activeRoom === room}
-                      onClick={() => loadRoom(room)}
-                    >
-                      <Stack direction="horizontal" gap={2}>
-                        <div className="me-auto">
-                          <div className="d-flex align-items-center">
-                            {unreadCounts[room] > 0 && (
-                              <span
-                                className="me-2"
-                                style={{
-                                  width: "8px",
-                                  height: "8px",
-                                  backgroundColor: "#0d6efd",
-                                  borderRadius: "50%",
-                                  display: "inline-block",
-                                }}
-                              ></span>
-                            )}
-                            <span className="fw-bold">
-                              {room.startsWith("room_")
-                                ? "Anonymous"
-                                : "Customer"}
-                            </span>
-                          </div>
-                          <small className="text-muted">{room}</small>
-                        </div>
-                        {unreadCounts[room] > 0 && (
-                          <Badge bg="primary" pill>
-                            {unreadCounts[room]}
-                          </Badge>
-                        )}
-                      </Stack>
-                    </RoomItem>
-                  ))}
-                </ListGroup>
+                <ListGroup variant="flush">{renderRoomList()}</ListGroup>
               </Card.Body>
             </SidebarCard>
           </Col>
@@ -407,23 +484,22 @@ export default function Admin() {
                   </MessagesArea>
 
                   <InputContainer>
-                    <InputGroup>
+                    <div className="d-flex gap-2">
                       <StyledInput
                         type="text"
                         value={input}
                         onChange={(e) => setInput(e.target.value)}
-                        onKeyPress={(e) => e.key === "Enter" && sendMessage()}
+                        onKeyDown={(e) => e.key === "Enter" && sendMessage()}
                         placeholder="Scrie răspunsul..."
                       />
                       <SendButton
-                        variant="primary"
                         onClick={sendMessage}
                         disabled={!input.trim()}
                       >
                         <FiSend size={16} />
                         <span>Trimite</span>
                       </SendButton>
-                    </InputGroup>
+                    </div>
                   </InputContainer>
                 </>
               ) : (

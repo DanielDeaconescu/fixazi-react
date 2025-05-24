@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { supabase } from "../lib/supabaseClient";
-import { FiMessageSquare, FiX, FiSend } from "react-icons/fi";
+import { FiMessageSquare, FiX, FiSend, FiUser, FiPhone } from "react-icons/fi";
 import { format } from "date-fns";
 import styled from "styled-components";
 
@@ -148,10 +148,66 @@ const SendButton = styled.button`
   }
 `;
 
+const InfoForm = styled.div`
+  padding: 16px;
+  background: #1e293b;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+`;
+
+const FormGroup = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+`;
+
+const FormLabel = styled.label`
+  font-size: 14px;
+  color: #e2e8f0;
+`;
+
+const FormInput = styled.input`
+  padding: 8px 12px;
+  border-radius: 4px;
+  border: 1px solid #334155;
+  background: #0f172a;
+  color: #e2e8f0;
+  outline: none;
+
+  &:focus {
+    border-color: #3b82f6;
+  }
+`;
+
+const SubmitButton = styled.button`
+  background: #3b82f6;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+  margin-top: 8px;
+
+  &:hover {
+    background: #2563eb;
+  }
+
+  &:disabled {
+    background: #64748b;
+    cursor: not-allowed;
+  }
+`;
+
 export default function ChatWidget() {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
+  const [visitorInfo, setVisitorInfo] = useState({
+    name: "",
+    phone: "",
+  });
+  const [hasSubmittedInfo, setHasSubmittedInfo] = useState(false);
   const messagesEndRef = useRef(null);
 
   // Generate a room ID based on visitor
@@ -161,6 +217,25 @@ export default function ChatWidget() {
 
   useEffect(() => {
     localStorage.setItem("chat_room_id", roomId);
+
+    // Check if visitor info exists
+    const checkVisitorInfo = async () => {
+      const { data } = await supabase
+        .from("visitor_profiles")
+        .select("*")
+        .eq("room_id", roomId)
+        .single();
+
+      if (data) {
+        setHasSubmittedInfo(true);
+        setVisitorInfo({
+          name: data.name,
+          phone: data.phone,
+        });
+      }
+    };
+
+    checkVisitorInfo();
 
     // Subscribe to new messages
     const channel = supabase
@@ -190,17 +265,50 @@ export default function ChatWidget() {
       if (data) setMessages(data);
     };
 
-    loadMessages();
+    if (hasSubmittedInfo) {
+      loadMessages();
+    }
 
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [roomId]);
+  }, [roomId, hasSubmittedInfo]);
 
   useEffect(() => {
     // Auto-scroll to bottom when messages change
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
+
+  const handleInfoSubmit = async (e) => {
+    e.preventDefault();
+    if (!visitorInfo.name.trim() || !visitorInfo.phone.trim()) return;
+
+    try {
+      // Save visitor profile with explicit timestamps
+      const { error } = await supabase.from("visitor_profiles").upsert(
+        {
+          room_id: roomId,
+          name: visitorInfo.name,
+          phone: visitorInfo.phone,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+        },
+        { onConflict: "room_id" }
+      );
+
+      if (!error) {
+        setHasSubmittedInfo(true);
+
+        // Trigger real-time update for visitor profiles
+        await supabase
+          .from("visitor_profiles")
+          .update({ updated_at: new Date().toISOString() })
+          .eq("room_id", roomId);
+      }
+    } catch (err) {
+      console.error("Error saving visitor info:", err);
+    }
+  };
 
   const sendMessage = async () => {
     if (!input.trim()) return;
@@ -226,29 +334,95 @@ export default function ChatWidget() {
               <FiX size={20} />
             </CloseButton>
           </ChatHeader>
-          <MessagesContainer>
-            {messages.map((msg) => (
-              <MessageBubble key={msg.id} $isCustomer={msg.is_from_customer}>
-                <div>{msg.content}</div>
-                <MessageTime $isCustomer={msg.is_from_customer}>
-                  {format(new Date(msg.created_at), "HH:mm")}
-                </MessageTime>
-              </MessageBubble>
-            ))}
-            <div ref={messagesEndRef} />
-          </MessagesContainer>
-          <InputContainer>
-            <MessageInput
-              type="text"
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && sendMessage()}
-              placeholder="Scrie mesajul tău..."
-            />
-            <SendButton onClick={sendMessage} disabled={!input.trim()}>
-              <FiSend size={16} />
-            </SendButton>
-          </InputContainer>
+
+          {!hasSubmittedInfo ? (
+            <InfoForm>
+              <h4 style={{ color: "#e2e8f0", marginBottom: "12px" }}>
+                Informații de contact
+              </h4>
+              <FormGroup>
+                <FormLabel>
+                  <FiUser size={14} style={{ marginRight: 8 }} />
+                  Nume*
+                </FormLabel>
+                <FormInput
+                  type="text"
+                  value={visitorInfo.name}
+                  onChange={(e) =>
+                    setVisitorInfo({ ...visitorInfo, name: e.target.value })
+                  }
+                  placeholder="Introdu numele tău"
+                  required
+                />
+              </FormGroup>
+              <FormGroup>
+                <FormLabel>
+                  <FiPhone size={14} style={{ marginRight: 8 }} />
+                  Telefon*
+                </FormLabel>
+                <FormInput
+                  type="tel"
+                  value={visitorInfo.phone}
+                  onChange={(e) =>
+                    setVisitorInfo({ ...visitorInfo, phone: e.target.value })
+                  }
+                  placeholder="Introdu numărul de telefon"
+                  required
+                />
+              </FormGroup>
+              <small style={{ color: "#94a3b8", fontSize: "12px" }}>
+                * Câmp obligatoriu
+              </small>
+              <SubmitButton
+                onClick={handleInfoSubmit}
+                disabled={!visitorInfo.name.trim() || !visitorInfo.phone.trim()}
+              >
+                Începe conversația
+              </SubmitButton>
+            </InfoForm>
+          ) : (
+            <>
+              <MessagesContainer>
+                {messages.length === 0 ? (
+                  <div
+                    style={{
+                      color: "#e2e8f0",
+                      textAlign: "center",
+                      padding: "20px",
+                      fontStyle: "italic",
+                    }}
+                  >
+                    Bun venit! Cum vă putem ajuta?
+                  </div>
+                ) : (
+                  messages.map((msg) => (
+                    <MessageBubble
+                      key={msg.id}
+                      $isCustomer={msg.is_from_customer}
+                    >
+                      <div>{msg.content}</div>
+                      <MessageTime $isCustomer={msg.is_from_customer}>
+                        {format(new Date(msg.created_at), "HH:mm")}
+                      </MessageTime>
+                    </MessageBubble>
+                  ))
+                )}
+                <div ref={messagesEndRef} />
+              </MessagesContainer>
+              <InputContainer>
+                <MessageInput
+                  type="text"
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  onKeyDown={(e) => e.key === "Enter" && sendMessage()}
+                  placeholder="Scrie mesajul tău..."
+                />
+                <SendButton onClick={sendMessage} disabled={!input.trim()}>
+                  <FiSend size={16} />
+                </SendButton>
+              </InputContainer>
+            </>
+          )}
         </ChatWindow>
       ) : (
         <ToggleButton onClick={() => setIsOpen(true)}>
