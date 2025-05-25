@@ -14,6 +14,8 @@ import {
   Stack,
 } from "react-bootstrap";
 import styled from "styled-components";
+import { FiPaperclip } from "react-icons/fi";
+import { format } from "date-fns";
 
 // Styled components
 const AdminContainer = styled(Container)`
@@ -68,33 +70,49 @@ const MessagesArea = styled.div`
 
 const MessageBubble = styled.div`
   max-width: 70%;
-  padding: 10px 14px;
+  padding: 12px 16px;
   margin-bottom: 12px;
   border-radius: 8px;
   font-size: 0.95rem;
   line-height: 1.4;
   word-break: break-word;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  position: relative;
 
-  ${({ $isCustomer, $unread }) => {
-    if ($isCustomer) {
-      return $unread
-        ? `
-          background: #e9ecef;
-          color: #212529;
-          border-left: 3px solid #0d6efd;
-        `
-        : `
-          background: #e9ecef;
-          color: #212529;
-        `;
-    } else {
-      return `
-        background: #0d6efd;
-        color: white;
-      `;
+  /* Visitor Messages */
+  ${({ $isCustomer }) =>
+    $isCustomer &&
+    `
+    background: #EDF2F7; /* Light gray-blue background */
+    color: #2D3748; /* Dark gray text */
+    border-left: 4px solid #4299E1; /* Blue accent border */
+    
+    /* Timestamp for visitor messages */
+    small {
+      color: #4A5568 !important; /* Dark gray timestamp */
     }
-  }}
+  `}
+
+  /* Admin Messages */
+  ${({ $isCustomer }) =>
+    !$isCustomer &&
+    `
+    background: #4299E1; /* Blue background */
+    color: white; /* White text */
+    
+    /* Timestamp for admin messages */
+    small {
+      color: #EBF8FF !important; /* Very light blue timestamp */
+    }
+  `}
+
+  /* Unread message styling */
+  ${({ $unread }) =>
+    $unread &&
+    `
+    background: #E6FFFA !important;
+    border-left: 4px solid #38B2AC !important;
+  `}
 `;
 
 const InputContainer = styled.div`
@@ -159,6 +177,39 @@ export default function Admin() {
   const [unreadMessages, setUnreadMessages] = useState({});
   const [visitorProfiles, setVisitorProfiles] = useState({});
   const [isLoading, setIsLoading] = useState(true);
+  const [file, setFile] = useState(null);
+  const [isUploading, setIsUploading] = useState(false);
+
+  // Add file handler
+  const handleFileUpload = async (e) => {
+    const selectedFile = e.target.files[0];
+    if (!selectedFile) return;
+
+    const validTypes = [
+      "image/jpeg",
+      "image/png",
+      "image/gif",
+      "application/pdf",
+      "text/plain",
+      "application/msword",
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    ];
+
+    if (!validTypes.includes(selectedFile.type)) {
+      toast.error(
+        "Please upload a valid file type (JPEG, PNG, GIF, PDF, TXT, DOC, DOCX)"
+      );
+      return;
+    }
+
+    if (selectedFile.size > 5 * 1024 * 1024) {
+      toast.error("File size should be less than 5MB");
+      return;
+    }
+
+    setFile(selectedFile);
+    setInput(selectedFile.name);
+  };
 
   const loadRoom = async (roomId) => {
     setActiveRoom(roomId);
@@ -283,12 +334,15 @@ export default function Admin() {
             payload.new.is_from_customer &&
             payload.new.room_id !== activeRoom
           ) {
-            toast.success(`Mesaj nou de la un vizitator fixazi.com!`, {
+            const message = payload.new.file_url
+              ? `Fișier nou de la un vizitator!`
+              : `Mesaj nou de la un vizitator!`;
+
+            toast.success(message, {
               position: "top-center",
               duration: 5000,
             });
 
-            // Update unread counts immediately
             setUnreadCounts((prev) => ({
               ...prev,
               [payload.new.room_id]: (prev[payload.new.room_id] || 0) + 1,
@@ -369,15 +423,53 @@ export default function Admin() {
   }, [activeRoom]);
 
   const sendMessage = async () => {
-    if (!input.trim() || !activeRoom) return;
-    const { error } = await supabase.from("messages").insert([
-      {
-        room_id: activeRoom,
-        content: input,
-        is_from_customer: false,
-      },
-    ]);
-    if (!error) setInput("");
+    if (!input.trim() && !file) return;
+
+    setIsUploading(true);
+
+    try {
+      let fileUrl = null;
+      let fileType = null;
+
+      if (file) {
+        const fileExt = file.name.split(".").pop();
+        const fileName = `${activeRoom}-${Date.now()}.${fileExt}`;
+        const filePath = `chat-files/${fileName}`;
+
+        const { error: uploadError } = await supabase.storage
+          .from("chat-files")
+          .upload(filePath, file);
+
+        if (uploadError) throw uploadError;
+
+        const { data: urlData } = supabase.storage
+          .from("chat-files")
+          .getPublicUrl(filePath);
+
+        fileUrl = urlData.publicUrl;
+        fileType = file.type;
+      }
+
+      const { error } = await supabase.from("messages").insert([
+        {
+          room_id: activeRoom,
+          content: input || (file ? `[File: ${file.name}]` : ""),
+          is_from_customer: false,
+          file_url: fileUrl,
+          file_type: fileType,
+        },
+      ]);
+
+      if (!error) {
+        setInput("");
+        setFile(null);
+      }
+    } catch (error) {
+      console.error("Error sending message:", error);
+      toast.error("Error uploading file. Please try again.");
+    } finally {
+      setIsUploading(false);
+    }
   };
 
   const renderRoomList = () => {
@@ -477,27 +569,94 @@ export default function Admin() {
                           $isCustomer={msg.is_from_customer}
                           $unread={!msg.is_read && msg.is_from_customer}
                         >
-                          {msg.content}
+                          {msg.file_url ? (
+                            <div className="d-flex flex-column">
+                              <a
+                                href={msg.file_url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className={
+                                  msg.is_from_customer
+                                    ? "text-blue-600"
+                                    : "text-white"
+                                }
+                              >
+                                {msg.file_type.startsWith("image/") ? (
+                                  <img
+                                    src={msg.file_url}
+                                    alt="Uploaded content"
+                                    style={{
+                                      maxWidth: "100%",
+                                      maxHeight: "200px",
+                                      borderRadius: "6px",
+                                    }}
+                                  />
+                                ) : (
+                                  <div className="d-flex align-items-center gap-2">
+                                    <FiPaperclip size={16} />
+                                    {msg.content
+                                      .replace("[File: ", "")
+                                      .replace("]", "")}
+                                  </div>
+                                )}
+                              </a>
+                              <small className="mt-1">
+                                {format(new Date(msg.created_at), "HH:mm")}
+                              </small>
+                            </div>
+                          ) : (
+                            <>
+                              <div>{msg.content}</div>
+                              <small className="d-block mt-1">
+                                {format(new Date(msg.created_at), "HH:mm")}
+                              </small>
+                            </>
+                          )}
                         </MessageBubble>
                       </div>
                     ))}
                   </MessagesArea>
 
                   <InputContainer>
-                    <div className="d-flex gap-2">
+                    <div className="d-flex gap-2 align-items-center">
+                      <input
+                        type="file"
+                        id="admin-file-upload"
+                        style={{ display: "none" }}
+                        onChange={handleFileUpload}
+                        accept="image/*,.pdf,.txt,.doc,.docx"
+                      />
+                      <label
+                        htmlFor="admin-file-upload"
+                        className="btn btn-outline-secondary p-2"
+                        style={{ cursor: "pointer" }}
+                      >
+                        <FiPaperclip size={18} />
+                      </label>
                       <StyledInput
                         type="text"
                         value={input}
                         onChange={(e) => setInput(e.target.value)}
                         onKeyDown={(e) => e.key === "Enter" && sendMessage()}
-                        placeholder="Scrie răspunsul..."
+                        placeholder={file ? file.name : "Scrie răspunsul..."}
                       />
                       <SendButton
                         onClick={sendMessage}
-                        disabled={!input.trim()}
+                        disabled={(!input.trim() && !file) || isUploading}
                       >
-                        <FiSend size={16} />
-                        <span>Trimite</span>
+                        {isUploading ? (
+                          <span
+                            className="spinner-border spinner-border-sm"
+                            role="status"
+                          >
+                            <span className="visually-hidden">Loading...</span>
+                          </span>
+                        ) : (
+                          <>
+                            <FiSend size={16} />
+                            <span>Trimite</span>
+                          </>
+                        )}
                       </SendButton>
                     </div>
                   </InputContainer>

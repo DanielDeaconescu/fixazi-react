@@ -3,6 +3,8 @@ import { supabase } from "../lib/supabaseClient";
 import { FiMessageSquare, FiX, FiSend, FiUser, FiPhone } from "react-icons/fi";
 import { format } from "date-fns";
 import styled from "styled-components";
+import { FiPaperclip } from "react-icons/fi";
+import FilePreview from "./FilePreview";
 
 // Styled Components
 const ChatContainer = styled.div`
@@ -95,6 +97,12 @@ const MessageBubble = styled.div`
         color: #e2e8f0;
         align-self: flex-start;
       `}
+
+  ${({ $hasAttachment }) =>
+    $hasAttachment &&
+    `
+    padding: 12px;
+  `}
 `;
 
 const MessageTime = styled.div`
@@ -209,6 +217,39 @@ export default function ChatWidget() {
   });
   const [hasSubmittedInfo, setHasSubmittedInfo] = useState(false);
   const messagesEndRef = useRef(null);
+  const [file, setFile] = useState(null);
+  const [isUploading, setIsUploading] = useState(false);
+
+  const handleFileUpload = async (e) => {
+    const selectedFile = e.target.files[0];
+    if (!selectedFile) return;
+
+    // Validate file type and size (e.g., 5MB limit)
+    const validTypes = [
+      "image/jpeg",
+      "image/png",
+      "image/gif",
+      "application/pdf",
+      "text/plain",
+      "application/msword",
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    ];
+
+    if (!validTypes.includes(selectedFile.type)) {
+      alert(
+        "Please upload a valid file type (JPEG, PNG, GIF, PDF, TXT, DOC, DOCX)"
+      );
+      return;
+    }
+
+    if (selectedFile.size > 5 * 1024 * 1024) {
+      alert("File size should be less than 5MB");
+      return;
+    }
+
+    setFile(selectedFile);
+    setInput(selectedFile.name);
+  };
 
   // Generate a room ID based on visitor
   const roomId =
@@ -311,17 +352,62 @@ export default function ChatWidget() {
   };
 
   const sendMessage = async () => {
-    if (!input.trim()) return;
+    if (!input.trim() && !file) return;
 
-    await supabase.from("messages").insert([
-      {
-        room_id: roomId,
-        content: input,
-        is_from_customer: true,
-      },
-    ]);
+    setIsUploading(true);
 
-    setInput("");
+    try {
+      let fileUrl = null;
+      let fileType = null;
+
+      // Upload file if present
+      if (file) {
+        const fileExt = file.name.split(".").pop();
+        const fileName = `${roomId}-${Date.now()}.${fileExt}`;
+        const filePath = `chat-files/${fileName}`;
+
+        // Use the storage API directly
+        const { error: uploadError } = await supabase.storage
+          .from("chat-files")
+          .upload(filePath, file);
+
+        if (uploadError) {
+          // Handle specific storage errors
+          if (uploadError.error === "Unauthorized") {
+            throw new Error(
+              "Storage upload unauthorized. Check your bucket policies."
+            );
+          }
+          throw uploadError;
+        }
+
+        // Get public URL - no need for signed URL if bucket is public
+        fileUrl = `${supabase.supabaseUrl}/storage/v1/object/public/chat-files/${filePath}`;
+        fileType = file.type;
+      }
+
+      // Send message to database
+      const { error: insertError } = await supabase.from("messages").insert([
+        {
+          room_id: roomId,
+          content: input || (file ? `[File: ${file.name}]` : ""),
+          is_from_customer: true,
+          file_url: fileUrl,
+          file_type: fileType,
+          created_at: new Date().toISOString(), // Explicit timestamp
+        },
+      ]);
+
+      if (insertError) throw insertError;
+
+      setInput("");
+      setFile(null);
+    } catch (error) {
+      console.error("Error sending message:", error);
+      alert(`Error: ${error.message}`);
+    } finally {
+      setIsUploading(false);
+    }
   };
 
   return (
@@ -383,42 +469,65 @@ export default function ChatWidget() {
           ) : (
             <>
               <MessagesContainer>
-                {messages.length === 0 ? (
-                  <div
-                    style={{
-                      color: "#e2e8f0",
-                      textAlign: "center",
-                      padding: "20px",
-                      fontStyle: "italic",
-                    }}
+                {messages.map((msg) => (
+                  <MessageBubble
+                    key={msg.id}
+                    $isCustomer={msg.is_from_customer}
+                    $hasAttachment={!!msg.file_url}
                   >
-                    Bun venit! Cum vă putem ajuta?
-                  </div>
-                ) : (
-                  messages.map((msg) => (
-                    <MessageBubble
-                      key={msg.id}
-                      $isCustomer={msg.is_from_customer}
-                    >
+                    {msg.file_url ? (
+                      <FilePreview
+                        fileUrl={msg.file_url}
+                        fileType={msg.file_type}
+                        fileName={msg.content
+                          .replace("[File: ", "")
+                          .replace("]", "")}
+                      />
+                    ) : (
                       <div>{msg.content}</div>
-                      <MessageTime $isCustomer={msg.is_from_customer}>
-                        {format(new Date(msg.created_at), "HH:mm")}
-                      </MessageTime>
-                    </MessageBubble>
-                  ))
-                )}
+                    )}
+                    <MessageTime $isCustomer={msg.is_from_customer}>
+                      {format(new Date(msg.created_at), "HH:mm")}
+                    </MessageTime>
+                  </MessageBubble>
+                ))}
                 <div ref={messagesEndRef} />
               </MessagesContainer>
               <InputContainer>
+                <input
+                  type="file"
+                  id="file-upload"
+                  style={{ display: "none" }}
+                  onChange={handleFileUpload}
+                  accept="image/*,.pdf,.txt,.doc,.docx"
+                />
+                <label
+                  htmlFor="file-upload"
+                  style={{ cursor: "pointer", padding: "8px" }}
+                >
+                  <FiPaperclip size={20} color="#e2e8f0" />
+                </label>
                 <MessageInput
                   type="text"
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   onKeyDown={(e) => e.key === "Enter" && sendMessage()}
-                  placeholder="Scrie mesajul tău..."
+                  placeholder={file ? file.name : "Scrie mesajul tău..."}
                 />
-                <SendButton onClick={sendMessage} disabled={!input.trim()}>
-                  <FiSend size={16} />
+                <SendButton
+                  onClick={sendMessage}
+                  disabled={(!input.trim() && !file) || isUploading}
+                >
+                  {isUploading ? (
+                    <div
+                      className="spinner-border spinner-border-sm"
+                      role="status"
+                    >
+                      <span className="visually-hidden">Loading...</span>
+                    </div>
+                  ) : (
+                    <FiSend size={16} />
+                  )}
                 </SendButton>
               </InputContainer>
             </>
