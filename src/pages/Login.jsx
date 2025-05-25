@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuthStore } from "../store/authStore";
 import styled from "styled-components";
 import Logo from "../components/Logo";
+import { Helmet } from "react-helmet-async";
 
 // Styled Components
 const LoginContainer = styled.div`
@@ -101,29 +102,34 @@ export default function Login() {
   }, [isLoading, user, navigate]);
 
   return (
-    <LoginContainer>
-      <Logo />
-      <LoginCard>
-        <Title>Autentificare Administrator</Title>
-        {error && <ErrorMessage>{error}</ErrorMessage>}
-        <Form onSubmit={handleSubmit}>
-          <Input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="Email"
-            required
-          />
-          <Input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="Parolă"
-            required
-          />
-          <SubmitButton type="submit">Autentificare</SubmitButton>
-        </Form>
-      </LoginCard>
-    </LoginContainer>
+    <>
+      <Helmet>
+        <title>Fixazi | Admin</title>
+      </Helmet>
+      <LoginContainer>
+        <Logo />
+        <LoginCard>
+          <Title>Autentificare Administrator</Title>
+          {error && <ErrorMessage>{error}</ErrorMessage>}
+          <Form onSubmit={handleSubmit}>
+            <Input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="Email"
+              required
+            />
+            <Input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Parolă"
+              required
+            />
+            <SubmitButton type="submit">Autentificare</SubmitButton>
+          </Form>
+        </LoginCard>
+      </LoginContainer>
+    </>
   );
 }
