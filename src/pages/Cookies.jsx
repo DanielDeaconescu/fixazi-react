@@ -1,5 +1,6 @@
 import CookiesHeader from "../components/CookiesHeader";
 import CookiesInfo from "../components/CookiesInfo";
+import { Helmet } from "react-helmet-async";
 
 function Cookies() {
   return (
