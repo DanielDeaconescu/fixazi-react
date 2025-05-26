@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import { useForm } from "react-hook-form";
 import { supabase } from "../lib/supabaseClient";
 import { FiMessageSquare, FiX, FiSend, FiUser, FiPhone } from "react-icons/fi";
 import { format } from "date-fns";
@@ -39,7 +40,7 @@ const ToggleButton = styled.button`
 
 const ChatWindow = styled.div`
   width: 320px;
-  height: 400px;
+  height: 450px;
   background: #1e293b;
   border-radius: 8px;
   box-shadow: 0 10px 15px rgba(0, 0, 0, 0.2);
@@ -156,7 +157,7 @@ const SendButton = styled.button`
   }
 `;
 
-const InfoForm = styled.div`
+const InfoForm = styled.form`
   padding: 16px;
   background: #1e293b;
   display: flex;
@@ -216,9 +217,25 @@ export default function ChatWidget() {
     phone: "",
   });
   const [hasSubmittedInfo, setHasSubmittedInfo] = useState(false);
-  const messagesEndRef = useRef(null);
   const [file, setFile] = useState(null);
   const [isUploading, setIsUploading] = useState(false);
+  const messagesEndRef = useRef(null);
+
+  // React Hook Form setup
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset,
+  } = useForm({
+    defaultValues: {
+      name: "",
+      phone: "",
+    },
+  });
+
+  // Phone number regex for Romanian numbers
+  const phoneRegex = /^(?:(?:00|\\+)?40|0)[0-9]{9}$/;
 
   const handleFileUpload = async (e) => {
     const selectedFile = e.target.files[0];
@@ -236,14 +253,14 @@ export default function ChatWidget() {
     ];
 
     if (!validTypes.includes(selectedFile.type)) {
-      alert(
-        "Please upload a valid file type (JPEG, PNG, GIF, PDF, TXT, DOC, DOCX)"
+      toast.error(
+        "Vă rugăm încărcați un fișier care are unul dintre aceste format-uri: JPEG, PNG, GIF, PDF, TXT, DOC, DOCX"
       );
       return;
     }
 
     if (selectedFile.size > 5 * 1024 * 1024) {
-      alert("File size should be less than 5MB");
+      toast.error("Dimensiunea fișierului trebuie să fie mai mică de 5MB");
       return;
     }
 
@@ -320,17 +337,14 @@ export default function ChatWidget() {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  const handleInfoSubmit = async (e) => {
-    e.preventDefault();
-    if (!visitorInfo.name.trim() || !visitorInfo.phone.trim()) return;
-
+  const onSubmit = async (data) => {
     try {
       // Save visitor profile with explicit timestamps
       const { error } = await supabase.from("visitor_profiles").upsert(
         {
           room_id: roomId,
-          name: visitorInfo.name,
-          phone: visitorInfo.phone,
+          name: data.name,
+          phone: data.phone,
           created_at: new Date().toISOString(),
           updated_at: new Date().toISOString(),
         },
@@ -339,7 +353,6 @@ export default function ChatWidget() {
 
       if (!error) {
         setHasSubmittedInfo(true);
-
         // Trigger real-time update for visitor profiles
         await supabase
           .from("visitor_profiles")
@@ -375,7 +388,7 @@ export default function ChatWidget() {
           // Handle specific storage errors
           if (uploadError.error === "Unauthorized") {
             throw new Error(
-              "Storage upload unauthorized. Check your bucket policies."
+              "Storage upload unauthorized. Check bucket policies."
             );
           }
           throw uploadError;
@@ -422,7 +435,7 @@ export default function ChatWidget() {
           </ChatHeader>
 
           {!hasSubmittedInfo ? (
-            <InfoForm>
+            <InfoForm onSubmit={handleSubmit(onSubmit)}>
               <h4 style={{ color: "#e2e8f0", marginBottom: "12px" }}>
                 Informații de contact
               </h4>
@@ -433,13 +446,20 @@ export default function ChatWidget() {
                 </FormLabel>
                 <FormInput
                   type="text"
-                  value={visitorInfo.name}
-                  onChange={(e) =>
-                    setVisitorInfo({ ...visitorInfo, name: e.target.value })
-                  }
                   placeholder="Introdu numele tău"
-                  required
+                  {...register("name", {
+                    required: "Numele este obligatoriu",
+                    minLength: {
+                      value: 2,
+                      message: "Numele trebuie să aibă minim 2 caractere",
+                    },
+                  })}
                 />
+                {errors.name && (
+                  <span style={{ color: "#ef4444", fontSize: "12px" }}>
+                    {errors.name.message}
+                  </span>
+                )}
               </FormGroup>
               <FormGroup>
                 <FormLabel>
@@ -448,23 +468,25 @@ export default function ChatWidget() {
                 </FormLabel>
                 <FormInput
                   type="tel"
-                  value={visitorInfo.phone}
-                  onChange={(e) =>
-                    setVisitorInfo({ ...visitorInfo, phone: e.target.value })
-                  }
                   placeholder="Introdu numărul de telefon"
-                  required
+                  {...register("phone", {
+                    required: "Numărul de telefon este obligatoriu",
+                    pattern: {
+                      value: phoneRegex,
+                      message: "Introdu un număr de telefon valid",
+                    },
+                  })}
                 />
+                {errors.phone && (
+                  <span style={{ color: "#ef4444", fontSize: "12px" }}>
+                    {errors.phone.message}
+                  </span>
+                )}
               </FormGroup>
               <small style={{ color: "#94a3b8", fontSize: "12px" }}>
                 * Câmp obligatoriu
               </small>
-              <SubmitButton
-                onClick={handleInfoSubmit}
-                disabled={!visitorInfo.name.trim() || !visitorInfo.phone.trim()}
-              >
-                Începe conversația
-              </SubmitButton>
+              <SubmitButton type="submit">Începe conversația</SubmitButton>
             </InfoForm>
           ) : (
             <>

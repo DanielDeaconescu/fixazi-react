@@ -38,7 +38,6 @@ const StyledLink = styled(Link)`
 `;
 
 const LoginLink = styled(StyledLink)`
-  margin-left: 0.5rem;
   padding: 0.5rem 1rem !important;
 
   &:hover {
