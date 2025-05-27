@@ -6,6 +6,9 @@ import CreatedBy from "./CreatedBy";
 import SideButtons from "./SideButtons";
 import BottomNavigation from "./BottomNavigation";
 import ChatWidget from "./ChatWidget";
+import { useState } from "react";
+import React from "react";
+import { useChat } from "../contexts/ChatContext";
 
 const LayoutWrapper = styled.div`
   display: flex;
@@ -17,7 +20,8 @@ const Main = styled.main`
 `;
 
 function AppLayout({ children }) {
-  const { pathname } = useLocation(); // Get current path
+  const { isChatOpen, toggleChat } = useChat();
+  const { pathname } = useLocation();
   const hideChatWidget = ["/login", "/admin"].includes(pathname);
 
   return (
@@ -28,8 +32,7 @@ function AppLayout({ children }) {
       <CreatedBy />
       <SideButtons />
       <BottomNavigation />
-      {!hideChatWidget && <ChatWidget />}{" "}
-      {/* Only show if not on /login or /admin */}
+      {!hideChatWidget && <ChatWidget />}
     </LayoutWrapper>
   );
 }

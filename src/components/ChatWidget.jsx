@@ -6,6 +6,7 @@ import { format } from "date-fns";
 import styled from "styled-components";
 import { FiPaperclip } from "react-icons/fi";
 import FilePreview from "./FilePreview";
+import { useChat } from "../contexts/ChatContext";
 
 // Styled Components
 const ChatContainer = styled.div`
@@ -209,7 +210,6 @@ const SubmitButton = styled.button`
 `;
 
 export default function ChatWidget() {
-  const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
   const [visitorInfo, setVisitorInfo] = useState({
@@ -220,6 +220,7 @@ export default function ChatWidget() {
   const [file, setFile] = useState(null);
   const [isUploading, setIsUploading] = useState(false);
   const messagesEndRef = useRef(null);
+  const { isChatOpen, toggleChat } = useChat();
 
   // React Hook Form setup
   const {
@@ -425,11 +426,11 @@ export default function ChatWidget() {
 
   return (
     <ChatContainer>
-      {isOpen ? (
+      {isChatOpen ? (
         <ChatWindow>
           <ChatHeader>
             <span>Asistență Clienți</span>
-            <CloseButton onClick={() => setIsOpen(false)}>
+            <CloseButton onClick={toggleChat}>
               <FiX size={20} />
             </CloseButton>
           </ChatHeader>
@@ -556,7 +557,7 @@ export default function ChatWidget() {
           )}
         </ChatWindow>
       ) : (
-        <ToggleButton onClick={() => setIsOpen(true)}>
+        <ToggleButton onClick={toggleChat}>
           <FiMessageSquare size={24} />
         </ToggleButton>
       )}

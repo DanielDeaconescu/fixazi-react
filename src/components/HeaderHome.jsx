@@ -9,6 +9,7 @@ import {
 import RepairForm from "./RepairForm";
 import LogoFixAzi from "../assets/images/fixazi_logo.jpg";
 import TablePrices from "./TablePrices";
+import { useChat } from "../contexts/ChatContext";
 
 const StyledHeader = styled.header`
   position: relative;
@@ -76,6 +77,8 @@ const StyledH1 = styled.h1`
 `;
 
 function HeaderHome() {
+  const { toggleChat } = useChat();
+
   return (
     <>
       <StyledHeader className="header position-relative video-background">
@@ -109,15 +112,13 @@ function HeaderHome() {
                 </li>
               </StyledList>
               <IndexHeaderButtons className="index-header-buttons d-flex gap-3">
-                <a
-                  href="#"
+                <button
+                  onClick={toggleChat}
                   className="btn btn-primary index-header-prices text-white"
-                  data-bs-toggle="modal"
-                  data-bs-target="#formModal"
                 >
                   <StyledIcon icon={faMessage} />
                   Contact
-                </a>
+                </button>
                 <a
                   className="btn btn-secondary index-header-prices"
                   data-bs-toggle="modal"

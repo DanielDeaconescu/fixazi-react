@@ -4,7 +4,7 @@ import OurValues from "../components/OurValues";
 import PhotoGallery from "../components/PhotoGallery";
 import { Helmet } from "react-helmet-async";
 
-function Home() {
+function Home({ toggleChat }) {
   return (
     <>
       <Helmet>
@@ -14,7 +14,7 @@ function Home() {
           content="Reparații telefoane, tablete, laptopuri - fixazi.com"
         />
       </Helmet>
-      <HeaderHome />
+      <HeaderHome toggleChat={toggleChat} />
       <OurValues />
       <CallToActionIndex />
       <PhotoGallery />
