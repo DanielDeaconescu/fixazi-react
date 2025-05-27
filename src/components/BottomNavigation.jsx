@@ -1,8 +1,13 @@
 import { useState } from "react";
 import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPhone, faClock } from "@fortawesome/free-solid-svg-icons";
+import {
+  faPhone,
+  faClock,
+  faComments,
+} from "@fortawesome/free-solid-svg-icons";
 import { Container } from "react-bootstrap";
+import { useChat } from "../contexts/ChatContext";
 
 const BottomNavContainer = styled.nav`
   display: block;
@@ -39,6 +44,30 @@ const ActionButton = styled.button`
   min-width: 80px;
   background-color: rgb(75, 192, 231);
   color: black;
+  transition: all 0.2s ease;
+
+  &:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+`;
+
+const ActionButtonChatLive = styled.button`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem;
+  border-radius: 0.25rem;
+  border: none;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  min-width: 80px;
+  background-color: #3b82f6;
+  color: white;
   transition: all 0.2s ease;
 
   &:hover {
@@ -120,6 +149,7 @@ const ScheduleList = styled.ul`
 function BottomNavigation() {
   const [showSchedule, setShowSchedule] = useState(false);
   const [scheduleText, setScheduleText] = useState("Vezi Program");
+  const { toggleChat } = useChat();
 
   const handleScheduleClick = () => {
     const willShow = !showSchedule;
@@ -166,6 +196,13 @@ function BottomNavigation() {
             </IconWrapper>
             <ButtonText>Sună</ButtonText>
           </PhoneLink>
+
+          <ActionButtonChatLive onClick={toggleChat}>
+            <IconWrapper>
+              <FontAwesomeIcon icon={faComments} size="lg" />
+            </IconWrapper>
+            <ButtonText>Chat Live</ButtonText>
+          </ActionButtonChatLive>
 
           {/* Schedule toggle button */}
           <ActionButton variant="primary" onClick={handleScheduleClick}>
