@@ -31,7 +31,7 @@ function AppLayout({ children }) {
       <Footer />
       <CreatedBy />
       <SideButtons />
-      <BottomNavigation />
+      {!hideChatWidget && <BottomNavigation />}
       {!hideChatWidget && <ChatWidget />}
     </LayoutWrapper>
   );

@@ -161,7 +161,7 @@ const InputContainer = styled.div`
 
   @media (max-width: 768px) {
     position: fixed;
-    bottom: 0;
+    bottom: 20px;
     left: 0;
     right: 0;
     z-index: 10;
@@ -682,7 +682,7 @@ export default function Admin() {
               {activeRoom ? (
                 <>
                   {/* Mobile chat header */}
-                  <div className="d-md-none p-3 border-bottom d-flex justify-content-between align-items-center">
+                  {/* <div className="d-md-none p-3 border-bottom d-flex justify-content-between align-items-center">
                     <Button
                       variant="link"
                       onClick={() => setShowSidebar(true)}
@@ -693,8 +693,9 @@ export default function Admin() {
                     <h5 className="mb-0">
                       {visitorProfiles[activeRoom]?.name || "Conversație"}
                     </h5>
-                    <div style={{ width: 20 }}></div> {/* Spacer */}
-                  </div>
+                    <div style={{ width: 20 }}></div>
+                  </div> */}
+
                   <MessagesArea>
                     {messages.map((msg) => (
                       <div
