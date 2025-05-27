@@ -26,12 +26,31 @@ const AdminContainer = styled(Container)`
   border-radius: 8px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   overflow: hidden;
+
+  @media (max-width: 768px) {
+    margin: 0;
+    height: 100vh;
+    border-radius: 0;
+    overflow-x: hidden;
+    padding-top: 60px; /* Space for fixed header */
+  }
 `;
 
 const SidebarCard = styled(Card)`
   height: 100%;
   border-right: 1px solid #dee2e6;
   background-color: #fff;
+
+  @media (max-width: 768px) {
+    position: fixed;
+    width: 80%;
+    max-width: 300px;
+    z-index: 1000;
+    left: ${(props) => (props.$show ? "0" : "-100%")};
+    transition: left 0.3s ease;
+    height: 100%;
+    top: 0;
+  }
 `;
 
 const SidebarHeader = styled(Card.Header)`
@@ -59,6 +78,15 @@ const ChatContainer = styled.div`
   flex-direction: column;
   height: 70vh;
   background-color: #fff;
+
+  @media (max-width: 768px) {
+    height: calc(100vh - 60px); /* Only account for the single header now */
+    position: fixed;
+    width: 100%;
+    top: 60px;
+    left: 0;
+    z-index: 1;
+  }
 `;
 
 const MessagesArea = styled.div`
@@ -66,6 +94,11 @@ const MessagesArea = styled.div`
   overflow-y: auto;
   padding: 16px;
   background-color: #f8f9fa;
+
+  @media (max-width: 768px) {
+    height: calc(100% - 80px); /* Adjust for input container */
+    padding-bottom: 80px;
+  }
 `;
 
 const MessageBubble = styled.div`
@@ -113,6 +146,10 @@ const MessageBubble = styled.div`
     background: #E6FFFA !important;
     border-left: 4px solid #38B2AC !important;
   `}
+
+  @media (max-width: 768px) {
+    max-width: 85%;
+  }
 `;
 
 const InputContainer = styled.div`
@@ -121,6 +158,15 @@ const InputContainer = styled.div`
   border-top: 1px solid #dee2e6;
   position: sticky;
   bottom: 0;
+
+  @media (max-width: 768px) {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 10;
+    padding-bottom: env(safe-area-inset-bottom); /* For iPhone notches */
+  }
 `;
 
 const StyledInput = styled.input`
@@ -165,6 +211,43 @@ const EmptyState = styled.div`
   height: 100%;
   color: #6c757d;
   gap: 12px;
+  padding: 20px;
+  text-align: center;
+
+  @media (max-width: 768px) {
+    padding-top: 60px;
+  }
+`;
+
+// Add a new styled component for mobile header
+const MobileHeader = styled.div`
+  display: none;
+  padding: 12px 16px;
+  background-color: #f1f3f5;
+  border-bottom: 1px solid #dee2e6;
+  align-items: center;
+  justify-content: space-between;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  height: 60px;
+
+  @media (max-width: 768px) {
+    display: flex;
+  }
+
+  .conversation-title {
+    flex: 1;
+    text-align: center;
+    font-size: 1rem;
+    font-weight: 600;
+    margin: 0 10px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 `;
 
 export default function Admin() {
@@ -179,6 +262,23 @@ export default function Admin() {
   const [isLoading, setIsLoading] = useState(true);
   const [file, setFile] = useState(null);
   const [isUploading, setIsUploading] = useState(false);
+  const [showSidebar, setShowSidebar] = useState(false);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (window.innerWidth <= 768) {
+        const sidebar = document.querySelector(".sidebar-card");
+        if (sidebar && !sidebar.contains(event.target)) {
+          setShowSidebar(false);
+        }
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   // Add file handler
   const handleFileUpload = async (e) => {
@@ -213,6 +313,9 @@ export default function Admin() {
 
   const loadRoom = async (roomId) => {
     setActiveRoom(roomId);
+    if (window.innerWidth <= 768) {
+      setShowSidebar(false);
+    }
 
     // Clear unread counts for this room
     setUnreadCounts((prev) => ({ ...prev, [roomId]: 0 }));
@@ -529,10 +632,33 @@ export default function Admin() {
     <>
       <Toaster />
       <AdminContainer fluid>
-        <Row className="g-0 h-100">
+        {/* Mobile Header */}
+        <MobileHeader>
+          <Button
+            variant="link"
+            onClick={() => setShowSidebar(true)}
+            className="p-0"
+          >
+            <FiMessageSquare size={20} />
+          </Button>
+          <div className="conversation-title">
+            {activeRoom
+              ? visitorProfiles[activeRoom]?.name || "Conversație"
+              : "Conversații"}
+          </div>
+          <Button
+            variant="link"
+            className="text-danger p-0 d-flex align-items-center"
+            onClick={logout}
+          >
+            <FiLogOut size={20} />
+          </Button>
+        </MobileHeader>
+
+        <Row className="g-0 h-100 position-relative">
           {/* Sidebar - 30% width */}
           <Col md={4} lg={3} className="h-100">
-            <SidebarCard>
+            <SidebarCard $show={showSidebar} className="sidebar-card">
               <SidebarHeader className="d-flex justify-content-between align-items-center">
                 <span>Conversații</span>
                 <Button
@@ -555,6 +681,20 @@ export default function Admin() {
             <ChatContainer>
               {activeRoom ? (
                 <>
+                  {/* Mobile chat header */}
+                  <div className="d-md-none p-3 border-bottom d-flex justify-content-between align-items-center">
+                    <Button
+                      variant="link"
+                      onClick={() => setShowSidebar(true)}
+                      className="p-0"
+                    >
+                      <FiMessageSquare size={20} />
+                    </Button>
+                    <h5 className="mb-0">
+                      {visitorProfiles[activeRoom]?.name || "Conversație"}
+                    </h5>
+                    <div style={{ width: 20 }}></div> {/* Spacer */}
+                  </div>
                   <MessagesArea>
                     {messages.map((msg) => (
                       <div
@@ -616,7 +756,6 @@ export default function Admin() {
                       </div>
                     ))}
                   </MessagesArea>
-
                   <InputContainer>
                     <div className="d-flex gap-2 align-items-center">
                       <input
