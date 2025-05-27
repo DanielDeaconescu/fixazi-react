@@ -264,6 +264,16 @@ export default function Admin() {
   const [isUploading, setIsUploading] = useState(false);
   const [showSidebar, setShowSidebar] = useState(false);
 
+  const [unreadNotifications, setUnreadNotifications] = useState(0);
+
+  const updateDocumentTitle = (count) => {
+    if (count > 0) {
+      document.title = `(${count}) Admin Chat`;
+    } else {
+      document.title = "Admin Chat";
+    }
+  };
+
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (window.innerWidth <= 768) {
@@ -318,11 +328,18 @@ export default function Admin() {
     }
 
     // Clear unread counts for this room
-    setUnreadCounts((prev) => ({ ...prev, [roomId]: 0 }));
-    setUnreadMessages((prev) => {
-      const newUnreads = { ...prev };
-      delete newUnreads[roomId];
-      return newUnreads;
+    setUnreadCounts((prev) => {
+      const newCounts = { ...prev, [roomId]: 0 };
+
+      // Calculate total unread after clearing this room
+      const totalUnread = Object.values(newCounts).reduce(
+        (sum, count) => sum + count,
+        0
+      );
+      setUnreadNotifications(totalUnread);
+      updateDocumentTitle(totalUnread);
+
+      return newCounts;
     });
 
     const { data } = await supabase
@@ -342,6 +359,12 @@ export default function Admin() {
       .eq("is_from_customer", true);
   };
 
+  useEffect(() => {
+    return () => {
+      // Reset title when component unmounts
+      document.title = "Admin Chat";
+    };
+  }, []);
   // Fetch all chat rooms and visitor profiles
   useEffect(() => {
     const fetchInitialData = async () => {
@@ -414,6 +437,13 @@ export default function Admin() {
         setUnreadCounts(counts);
 
         setIsLoading(false);
+
+        const totalUnread = Object.values(counts).reduce(
+          (sum, count) => sum + count,
+          0
+        );
+        setUnreadNotifications(totalUnread);
+        updateDocumentTitle(totalUnread);
       } catch (error) {
         console.error("Error fetching initial data:", error);
         setIsLoading(false);
@@ -437,6 +467,23 @@ export default function Admin() {
             payload.new.is_from_customer &&
             payload.new.room_id !== activeRoom
           ) {
+            setUnreadCounts((prev) => {
+              const newCounts = {
+                ...prev,
+                [payload.new.room_id]: (prev[payload.new.room_id] || 0) + 1,
+              };
+
+              // Calculate total unread
+              const totalUnread = Object.values(newCounts).reduce(
+                (sum, count) => sum + count,
+                0
+              );
+              setUnreadNotifications(totalUnread);
+              updateDocumentTitle(totalUnread);
+
+              return newCounts;
+            });
+
             const message = payload.new.file_url
               ? `Fișier nou de la un vizitator!`
               : `Mesaj nou de la un vizitator!`;
