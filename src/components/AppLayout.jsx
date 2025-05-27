@@ -30,7 +30,7 @@ function AppLayout({ children }) {
       <Main className="bg-dark">{children}</Main>
       <Footer />
       <CreatedBy />
-      <SideButtons />
+      {!hideChatWidget && <SideButtons />}
       {!hideChatWidget && <BottomNavigation />}
       {!hideChatWidget && <ChatWidget />}
     </LayoutWrapper>
