@@ -681,21 +681,6 @@ export default function Admin() {
             <ChatContainer>
               {activeRoom ? (
                 <>
-                  {/* Mobile chat header */}
-                  {/* <div className="d-md-none p-3 border-bottom d-flex justify-content-between align-items-center">
-                    <Button
-                      variant="link"
-                      onClick={() => setShowSidebar(true)}
-                      className="p-0"
-                    >
-                      <FiMessageSquare size={20} />
-                    </Button>
-                    <h5 className="mb-0">
-                      {visitorProfiles[activeRoom]?.name || "Conversație"}
-                    </h5>
-                    <div style={{ width: 20 }}></div>
-                  </div> */}
-
                   <MessagesArea>
                     {messages.map((msg) => (
                       <div
