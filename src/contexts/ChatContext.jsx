@@ -10,13 +10,18 @@ export function ChatProvider({ children }) {
     setIsChatOpen(!isChatOpen);
   };
 
-  return (
-    <ChatContext.Provider value={{ isChatOpen, toggleChat }}>
-      {children}
-    </ChatContext.Provider>
-  );
+  const value = {
+    isChatOpen,
+    toggleChat,
+  };
+
+  return <ChatContext.Provider value={value}>{children}</ChatContext.Provider>;
 }
 
 export function useChat() {
-  return useContext(ChatContext);
+  const context = useContext(ChatContext);
+  if (!context) {
+    throw new Error("useChat must be used within a ChatProvider");
+  }
+  return context;
 }

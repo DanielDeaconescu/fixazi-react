@@ -43,7 +43,7 @@ const ActionButton = styled.button`
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   min-width: 80px;
   background-color: rgb(75, 192, 231);
-  color: black;
+  color: white;
   transition: all 0.2s ease;
 
   &:hover {
@@ -149,7 +149,7 @@ const ScheduleList = styled.ul`
 function BottomNavigation() {
   const [showSchedule, setShowSchedule] = useState(false);
   const [scheduleText, setScheduleText] = useState("Vezi Program");
-  const { toggleChat } = useChat();
+  const { toggleChat, isChatOpen } = useChat();
 
   const handleScheduleClick = () => {
     const willShow = !showSchedule;
@@ -201,7 +201,9 @@ function BottomNavigation() {
             <IconWrapper>
               <FontAwesomeIcon icon={faComments} size="lg" />
             </IconWrapper>
-            <ButtonText>Chat Live</ButtonText>
+            <ButtonText>
+              {isChatOpen ? "Închide Chatul" : "Chat Live"}
+            </ButtonText>
           </ActionButtonChatLive>
 
           {/* Schedule toggle button */}
