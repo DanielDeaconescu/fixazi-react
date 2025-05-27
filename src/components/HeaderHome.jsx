@@ -5,6 +5,8 @@ import {
   faMessage,
   faSquareCheck,
   faCircleInfo,
+  faCommentDots,
+  faComments,
 } from "@fortawesome/free-solid-svg-icons";
 import RepairForm from "./RepairForm";
 import LogoFixAzi from "../assets/images/fixazi_logo.jpg";
@@ -116,8 +118,8 @@ function HeaderHome() {
                   onClick={toggleChat}
                   className="btn btn-primary index-header-prices text-white"
                 >
-                  <StyledIcon icon={faMessage} />
-                  Contact
+                  <StyledIcon icon={faComments} />
+                  Chat Live
                 </button>
                 <a
                   className="btn btn-secondary index-header-prices"
