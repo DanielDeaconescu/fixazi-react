@@ -268,9 +268,9 @@ export default function Admin() {
 
   const updateDocumentTitle = (count) => {
     if (count > 0) {
-      document.title = `(${count}) Admin Chat`;
+      document.title = `(${count}) Fixazi | Admin Chat`;
     } else {
-      document.title = "Admin Chat";
+      document.title = "Fixazi | Admin Chat";
     }
   };
 
