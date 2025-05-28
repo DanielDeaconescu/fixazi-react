@@ -277,6 +277,9 @@ export default function ChatWidget() {
   useEffect(() => {
     localStorage.setItem("chat_room_id", roomId);
 
+    // Set the room_id context for RLS
+    supabase.rpc("set_current_room_id", { room_id: roomId });
+
     // Check if visitor info exists
     const checkVisitorInfo = async () => {
       const { data } = await supabase
@@ -340,6 +343,8 @@ export default function ChatWidget() {
 
   const onSubmit = async (data) => {
     try {
+      // Set the room context for RLS
+      await supabase.rpc("set_current_room_id", { room_id: roomId });
       // Save visitor profile with explicit timestamps
       const { error } = await supabase.from("visitor_profiles").upsert(
         {
