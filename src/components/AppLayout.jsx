@@ -9,14 +9,18 @@ import ChatWidget from "./ChatWidget";
 import { useState } from "react";
 import React from "react";
 import { useChat } from "../contexts/ChatContext";
+import CookiesPopup from "./CookiesPopup";
 
 const LayoutWrapper = styled.div`
   display: flex;
   flex-direction: column;
+  position: relative;
+  min-height: 100vh;
 `;
 
 const Main = styled.main`
   flex-grow: 1;
+  padding-bottom: 60px; // Add padding to prevent content being hidden behind the cookie banner
 `;
 
 function AppLayout({ children }) {
@@ -33,6 +37,7 @@ function AppLayout({ children }) {
       {!hideChatWidget && <SideButtons />}
       {!hideChatWidget && <BottomNavigation />}
       {!hideChatWidget && <ChatWidget />}
+      <CookiesPopup />
     </LayoutWrapper>
   );
 }
