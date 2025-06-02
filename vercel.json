@@ -23,6 +23,10 @@
     {
       "source": "/cookies",
       "destination": "/index.html"
+    },
+    {
+      "source": "/repairRequest",
+      "destination": "/index.html"
     }
   ]
 }
