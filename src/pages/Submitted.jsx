@@ -3,6 +3,7 @@ import { faEnvelopeCircleCheck } from "@fortawesome/free-solid-svg-icons";
 import Logo from "../components/Logo";
 import styled from "styled-components";
 import { Helmet } from "react-helmet-async";
+import { useEffect } from "react";
 
 const StyledSection = styled.section`
   height: 700px;
