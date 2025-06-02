@@ -134,38 +134,6 @@ function HeaderHome() {
         </div>
       </StyledHeader>
 
-      {/* Repair Form */}
-      <div
-        className="modal fade"
-        id="formModal"
-        tabIndex="-1"
-        aria-labelledby="exampleModalLabel"
-        aria-hidden="true"
-      >
-        <div className="modal-dialog">
-          <div className="modal-content">
-            <div className="modal-header bg-light">
-              <h5 className="modal-title" id="exampleModalLabel">
-                <img
-                  src={LogoFixAzi}
-                  width="200"
-                  alt="logo fixazi reparatii telefoane"
-                />
-              </h5>
-              <button
-                type="button"
-                className="btn-close"
-                data-bs-dismiss="modal"
-                aria-label="Close"
-              ></button>
-            </div>
-            <div className="modal-body bg-light">
-              <RepairForm />
-            </div>
-          </div>
-        </div>
-      </div>
-
       {/* Repair Prices Modal */}
       <div
         className="modal fade"

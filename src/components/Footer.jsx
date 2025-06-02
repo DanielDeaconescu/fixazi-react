@@ -164,7 +164,7 @@ function Footer() {
               ></button>
             </div>
             <div className="modal-body bg-light">
-              <RepairForm />
+              <RepairForm theme="light" />
             </div>
           </div>
         </div>

@@ -81,6 +81,29 @@ input[type="file"] {
 }
 
 
+/* Placeholder styling for dark theme */
+.dark-theme .form-control::placeholder,
+.dark-theme .form-select:invalid {
+  color: rgba(255, 255, 255, 0.7) !important;
+  opacity: 1 !important;
+}
+
+.dark-theme .form-control:-ms-input-placeholder,
+.dark-theme .form-select:-ms-input-placeholder {
+  color: rgba(255, 255, 255, 0.7) !important;
+}
+
+.dark-theme .form-control::-ms-input-placeholder,
+.dark-theme .form-select::-ms-input-placeholder {
+  color: rgba(255, 255, 255, 0.7) !important;
+}
+
+/* Light theme placeholders (default Bootstrap works fine) */
+.light-theme .form-control::placeholder {
+  color: #6c757d !important;
+  opacity: 1 !important;
+}
+
 `;
 
 export default GlobalStyles;
