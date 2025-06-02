@@ -22,6 +22,10 @@ const StyledParagraph = styled.p`
 const StyledIcon = styled(FontAwesomeIcon)``;
 
 function Submitted() {
+  useEffect(() => {
+    window.scrollTo(0, 0); // Scroll to top on component mount
+  }, []);
+
   return (
     <>
       <Helmet>
