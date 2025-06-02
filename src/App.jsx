@@ -13,6 +13,7 @@ import ProtectedRoute from "./components/ProtectedRoute"; // New
 import AuthInitializer from "./components/AuthInitializer";
 import { HelmetProvider, Helmet } from "react-helmet-async";
 import { ChatProvider } from "./contexts/ChatContext";
+import RepairRequest from "./pages/RepairRequest";
 
 function App() {
   return (
@@ -28,6 +29,7 @@ function App() {
                 <Route path="/" element={<Home />} />
                 <Route path="/services" element={<Services />} />
                 <Route path="/contact" element={<Contact />} />
+                <Route path="/repairRequest" element={<RepairRequest />} />
                 <Route path="/cookies" element={<Cookies />} />
                 <Route path="/submitted" element={<Submitted />} />
                 <Route
