@@ -5,6 +5,22 @@ import styled from "styled-components";
 const StyledCookiePopup = styled.div`
   background-color: black;
   z-index: 1050;
+  padding: 2rem 0.5rem;
+  @media (max-width: 576px) {
+    font-size: 0.85rem;
+  }
+`;
+
+const StyledOkButton = styled.button`
+  @media (max-width: 576px) {
+    padding: 0.75rem !important;
+  }
+`;
+
+const StyledLinkFindOutMore = styled(Link)`
+  @media (max-width: 576px) {
+    padding: 0.75rem 1rem !important;
+  }
 `;
 
 const StyledLink = styled(Link)`
@@ -33,10 +49,7 @@ const CookiesPopup = () => {
   if (!showBanner) return null;
 
   return (
-    <StyledCookiePopup
-      id="cookie-banner"
-      className="fixed-bottom text-white py-3 px-4"
-    >
+    <StyledCookiePopup id="cookie-banner" className="fixed-bottom text-white">
       <div className="container d-flex flex-column flex-md-row justify-content-between align-items-center">
         <div className="d-flex flex-column align-items-start gap-1">
           <div>
@@ -56,19 +69,19 @@ const CookiesPopup = () => {
         </div>
 
         <div className="d-flex gap-2">
-          <button
+          <StyledOkButton
             id="accept-cookies"
             className="btn btn-primary btn-sm"
             onClick={handleAccept}
           >
             Ok
-          </button>
-          <Link
+          </StyledOkButton>
+          <StyledLinkFindOutMore
             to="/cookies"
             className="btn btn-outline-light btn-sm more-about-cookies"
           >
             Află mai multe despre cookies
-          </Link>
+          </StyledLinkFindOutMore>
         </div>
       </div>
     </StyledCookiePopup>
