@@ -138,43 +138,6 @@ export default function RepairForm({ theme = "dark" }) {
     cursor: "pointer",
   };
 
-  // useEffect(() => {
-  //   // Check if script is already in the DOM
-  //   const existingScript = document.querySelector(
-  //     'script[src="https://challenges.cloudflare.com/turnstile/v0/api.js"]'
-  //   );
-
-  //   // Store the current ref value in a variable
-  //   const currentTurnstileRef = turnstileWidgetRef.current;
-
-  //   if (existingScript) {
-  //     // If script exists but Turnstile isn't loaded yet, wait for it
-  //     if (!window.turnstile) {
-  //       existingScript.onload = () => initializeTurnstile();
-  //     } else {
-  //       initializeTurnstile();
-  //     }
-  //     return;
-  //   }
-
-  //   // Only load Turnstile if it's not already loaded
-  //   const script = document.createElement("script");
-  //   script.src = "https://challenges.cloudflare.com/turnstile/v0/api.js";
-  //   script.async = true;
-  //   script.defer = true;
-  //   script.onload = () => {
-  //     initializeTurnstile();
-  //   };
-  //   document.body.appendChild(script);
-
-  //   return () => {
-  //     // Cleanup Turnstile widget when component unmounts
-  //     if (window.turnstile && currentTurnstileRef) {
-  //       window.turnstile.remove(currentTurnstileRef);
-  //     }
-  //   };
-  // }, []);
-
   const initializeTurnstile = () => {
     if (!window.turnstile || !turnstileWidgetRef.current) {
       console.error("Turnstile not available or container not ready");
@@ -533,7 +496,7 @@ export default function RepairForm({ theme = "dark" }) {
         style={{ minHeight: "65px" }} // Ensure consistent height
       >
         {(!isTurnstileReady || turnstileError) && (
-          <div className="text-center">
+          <div className="d-flex flex-column justify-content-center align-items-center">
             <p>
               {turnstileError
                 ? "Verificarea de securitate nu a putut fi încărcată"
