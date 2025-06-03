@@ -31,52 +31,73 @@ export default function RepairForm({ theme = "dark" }) {
     theme === "dark" ? "dark-theme" : "light-theme"
   }`;
 
-  // Retry mechanism
+  const [turnstileError, setTurnstileError] = useState(false);
+
+  // Combined and optimized Turnstile loading effect
   useEffect(() => {
     let retryCount = 0;
     const maxRetries = 3;
+    let timeoutId;
 
     const loadTurnstile = () => {
+      // Clear any existing timeout
+      clearTimeout(timeoutId);
+
+      // Set timeout for fallback UI
+      timeoutId = setTimeout(() => {
+        if (!isTurnstileReady) {
+          setTurnstileTimeout(true);
+        }
+      }, 5000);
+
+      // Check if Turnstile is already loaded
+      if (window.turnstile) {
+        initializeTurnstile();
+        return;
+      }
+
+      // Check for existing script
       const existingScript = document.querySelector(
         'script[src="https://challenges.cloudflare.com/turnstile/v0/api.js"]'
       );
 
-      const currentTurnstileRef = turnstileWidgetRef.current;
-
       if (existingScript) {
-        if (!window.turnstile) {
-          existingScript.onload = () => initializeTurnstile();
-        } else {
-          initializeTurnstile();
-        }
+        existingScript.onload = initializeTurnstile;
         return;
       }
 
+      // Load the script
       const script = document.createElement("script");
       script.src = "https://challenges.cloudflare.com/turnstile/v0/api.js";
       script.async = true;
       script.defer = true;
+
       script.onload = () => {
         initializeTurnstile();
+        clearTimeout(timeoutId);
       };
+
       script.onerror = () => {
         if (retryCount < maxRetries) {
           retryCount++;
           setTimeout(loadTurnstile, 1000 * retryCount);
         } else {
-          console.error("Failed to load Turnstile after multiple attempts");
+          setTurnstileError(true);
+          clearTimeout(timeoutId);
         }
       };
-      document.body.appendChild(script);
 
-      return () => {
-        if (window.turnstile && currentTurnstileRef) {
-          window.turnstile.remove(currentTurnstileRef);
-        }
-      };
+      document.body.appendChild(script);
     };
 
     loadTurnstile();
+
+    return () => {
+      clearTimeout(timeoutId);
+      if (window.turnstile && turnstileWidgetRef.current) {
+        window.turnstile.remove(turnstileWidgetRef.current);
+      }
+    };
   }, []);
 
   // Timeout check
@@ -155,16 +176,19 @@ export default function RepairForm({ theme = "dark" }) {
   }, []);
 
   const initializeTurnstile = () => {
-    if (
-      window.turnstile &&
-      turnstileWidgetRef.current &&
-      !turnstileWidgetRef.current.hasChildNodes()
-    ) {
+    if (!window.turnstile || !turnstileWidgetRef.current) {
+      console.error("Turnstile not available or container not ready");
+      return;
+    }
+
+    try {
       window.turnstile.render(turnstileWidgetRef.current, {
         sitekey: "0x4AAAAAABeH0IacZo6bEcT8",
         callback: (token) => {
           setTurnstileToken(token);
           setIsTurnstileReady(true);
+          setTurnstileTimeout(false);
+          setTurnstileError(false);
         },
         "expired-callback": () => {
           setTurnstileToken(null);
@@ -173,8 +197,12 @@ export default function RepairForm({ theme = "dark" }) {
         "error-callback": () => {
           setTurnstileToken(null);
           setIsTurnstileReady(false);
+          setTurnstileError(true);
         },
       });
+    } catch (err) {
+      console.error("Turnstile render error:", err);
+      setTurnstileError(true);
     }
   };
 
@@ -498,20 +526,35 @@ export default function RepairForm({ theme = "dark" }) {
         </div>
       )}
 
-      {/* Single Turnstile Widget Container */}
+      {/* Turnstile Widget Container */}
       <div
         ref={turnstileWidgetRef}
         className="cf-turnstile d-flex justify-content-center mb-3"
+        style={{ minHeight: "65px" }} // Ensure consistent height
       >
-        {!isTurnstileReady && (
+        {(!isTurnstileReady || turnstileError) && (
           <div className="text-center">
-            <p>Se încarcă verificarea de securitate...</p>
+            <p>
+              {turnstileError
+                ? "Verificarea de securitate nu a putut fi încărcată"
+                : "Se încarcă verificarea de securitate..."}
+            </p>
             <button
-              onClick={() => window.location.reload()}
+              onClick={() => {
+                setTurnstileError(false);
+                setTurnstileTimeout(false);
+                window.location.reload();
+              }}
               className="btn btn-sm btn-outline-secondary"
             >
               Reîncarcă
             </button>
+            {turnstileError && (
+              <p className="small mt-2">
+                Dacă problema persistă, încercați să deschideți formularul
+                într-un browser diferit.
+              </p>
+            )}
           </div>
         )}
       </div>
