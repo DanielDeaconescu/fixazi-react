@@ -21,6 +21,7 @@ export default function RepairForm({ theme = "dark" }) {
   const turnstileWidgetRef = useRef(null);
   const [isTurnstileReady, setIsTurnstileReady] = useState(false);
   const [turnstileToken, setTurnstileToken] = useState(null);
+  const [turnstileTimeout, setTurnstileTimeout] = useState(false);
   const acceptContact = watch("acceptContact");
 
   // Determine text and background colors based on theme
@@ -29,6 +30,65 @@ export default function RepairForm({ theme = "dark" }) {
   const formClass = `repairForm ${textColor} ${
     theme === "dark" ? "dark-theme" : "light-theme"
   }`;
+
+  // Retry mechanism
+  useEffect(() => {
+    let retryCount = 0;
+    const maxRetries = 3;
+
+    const loadTurnstile = () => {
+      const existingScript = document.querySelector(
+        'script[src="https://challenges.cloudflare.com/turnstile/v0/api.js"]'
+      );
+
+      const currentTurnstileRef = turnstileWidgetRef.current;
+
+      if (existingScript) {
+        if (!window.turnstile) {
+          existingScript.onload = () => initializeTurnstile();
+        } else {
+          initializeTurnstile();
+        }
+        return;
+      }
+
+      const script = document.createElement("script");
+      script.src = "https://challenges.cloudflare.com/turnstile/v0/api.js";
+      script.async = true;
+      script.defer = true;
+      script.onload = () => {
+        initializeTurnstile();
+      };
+      script.onerror = () => {
+        if (retryCount < maxRetries) {
+          retryCount++;
+          setTimeout(loadTurnstile, 1000 * retryCount);
+        } else {
+          console.error("Failed to load Turnstile after multiple attempts");
+        }
+      };
+      document.body.appendChild(script);
+
+      return () => {
+        if (window.turnstile && currentTurnstileRef) {
+          window.turnstile.remove(currentTurnstileRef);
+        }
+      };
+    };
+
+    loadTurnstile();
+  }, []);
+
+  // Timeout check
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (!isTurnstileReady) {
+        setTurnstileTimeout(true);
+      }
+    }, 5000); // 5 seconds timeout
+
+    return () => clearTimeout(timer);
+  }, [isTurnstileReady]);
 
   // Custom styles for different themes
   const customFileUploadStyle =
@@ -442,7 +502,19 @@ export default function RepairForm({ theme = "dark" }) {
       <div
         ref={turnstileWidgetRef}
         className="cf-turnstile d-flex justify-content-center mb-3"
-      ></div>
+      >
+        {!isTurnstileReady && (
+          <div className="text-center">
+            <p>Se încarcă verificarea de securitate...</p>
+            <button
+              onClick={() => window.location.reload()}
+              className="btn btn-sm btn-outline-secondary"
+            >
+              Reîncarcă
+            </button>
+          </div>
+        )}
+      </div>
 
       {/* Submit Button */}
       <button
