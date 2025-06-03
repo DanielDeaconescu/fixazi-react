@@ -2,8 +2,9 @@ import { useForm } from "react-hook-form";
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Modal } from "bootstrap";
+import PropTypes from "prop-types"; // Import PropTypes for type checking
 
-export default function RepairForm() {
+export default function RepairForm({ theme = "dark" }) {
   const navigate = useNavigate();
 
   const {
@@ -21,6 +22,40 @@ export default function RepairForm() {
   const [isTurnstileReady, setIsTurnstileReady] = useState(false);
   const [turnstileToken, setTurnstileToken] = useState(null);
   const acceptContact = watch("acceptContact");
+
+  // Determine text and background colors based on theme
+  const textColor = theme === "dark" ? "text-white" : "text-dark";
+  const bgColor = theme === "dark" ? "bg-dark" : "bg-white";
+  const formClass = `repairForm ${textColor} ${
+    theme === "dark" ? "dark-theme" : "light-theme"
+  }`;
+
+  // Custom styles for different themes
+  const customFileUploadStyle =
+    theme === "dark"
+      ? {
+          borderColor: "#ffffff40",
+          backgroundColor: "#ffffff10",
+          color: "white",
+        }
+      : {
+          borderColor: "#dee2e6",
+          backgroundColor: "#f8f9fa",
+          color: "#212529",
+        };
+
+  const customFileLabelStyle = {
+    ...(theme === "dark"
+      ? {
+          color: "white",
+          backgroundColor: "#ffffff20",
+        }
+      : {
+          color: "#212529",
+          backgroundColor: "#f8f9fa",
+        }),
+    cursor: "pointer",
+  };
 
   useEffect(() => {
     // Check if script is already in the DOM
@@ -118,7 +153,6 @@ export default function RepairForm() {
       console.log("Response data:", responseData);
 
       if (response.status === 429 && responseData.reason === "limit-reached") {
-        // alert("Ai atins limita de 3 trimiteri pe zi. Încearcă din nou mâine.");
         navigate("/too-many-requests");
 
         // Modal cleanup
@@ -176,11 +210,7 @@ export default function RepairForm() {
   };
 
   return (
-    <form
-      className="text-dark repairForm"
-      onSubmit={handleSubmit(onSubmit)}
-      noValidate
-    >
+    <form className={formClass} onSubmit={handleSubmit(onSubmit)} noValidate>
       <h4>Cerere de reparație</h4>
 
       {/* Full Name */}
@@ -190,12 +220,22 @@ export default function RepairForm() {
         </label>
         <input
           type="text"
-          className={`form-control ${errors.fullName ? "is-invalid" : ""}`}
+          className={`form-control ${errors.fullName ? "is-invalid" : ""} ${
+            theme === "dark"
+              ? "bg-dark text-white border-light placeholder-white"
+              : ""
+          }`}
           id="fullName"
           placeholder="Ex: Andrei Popescu"
           {...register("fullName", { required: "Numele este obligatoriu" })}
         />
-        <div className="text-danger small mt-1">{errors.fullName?.message}</div>
+        <div
+          className={`small mt-1 ${
+            errors.fullName ? "text-danger" : "text-muted"
+          }`}
+        >
+          {errors.fullName?.message}
+        </div>
       </div>
 
       {/* Phone Number */}
@@ -205,7 +245,11 @@ export default function RepairForm() {
         </label>
         <input
           type="tel"
-          className={`form-control ${errors.phoneNumber ? "is-invalid" : ""}`}
+          className={`form-control ${errors.phoneNumber ? "is-invalid" : ""} ${
+            theme === "dark"
+              ? "bg-dark text-white border-light placeholder-white"
+              : ""
+          }`}
           id="phoneNumber"
           placeholder="Ex: 07xxxxxxxx"
           {...register("phoneNumber", {
@@ -216,7 +260,11 @@ export default function RepairForm() {
             },
           })}
         />
-        <div className="text-danger small mt-1">
+        <div
+          className={`small mt-1 ${
+            errors.phoneNumber ? "text-danger" : "text-muted"
+          }`}
+        >
           {errors.phoneNumber?.message}
         </div>
       </div>
@@ -228,7 +276,11 @@ export default function RepairForm() {
         </label>
         <input
           type="email"
-          className={`form-control ${errors.emailAddress ? "is-invalid" : ""}`}
+          className={`form-control ${errors.emailAddress ? "is-invalid" : ""} ${
+            theme === "dark"
+              ? "bg-dark text-white border-light placeholder-white"
+              : ""
+          }`}
           id="emailAddress"
           placeholder="Ex: exemplu@email.com"
           {...register("emailAddress", {
@@ -238,7 +290,11 @@ export default function RepairForm() {
             },
           })}
         />
-        <div className="text-danger small mt-1">
+        <div
+          className={`small mt-1 ${
+            errors.emailAddress ? "text-danger" : "text-muted"
+          }`}
+        >
           {errors.emailAddress?.message}
         </div>
       </div>
@@ -250,13 +306,19 @@ export default function RepairForm() {
         </label>
         <select
           id="deviceType"
-          className={`form-select ${errors.deviceType ? "is-invalid" : ""}`}
+          className={`form-select ${errors.deviceType ? "is-invalid" : ""} ${
+            theme === "dark" ? "bg-dark text-white border-light" : ""
+          }`}
           defaultValue=""
           {...register("deviceType", {
             required: "Alege un dispozitiv",
           })}
         >
-          <option value="" disabled>
+          <option
+            value=""
+            disabled
+            className={theme === "dark" ? "text-muted" : ""}
+          >
             Alege un dispozitiv
           </option>
           <option value="telefon">Telefon</option>
@@ -264,7 +326,11 @@ export default function RepairForm() {
           <option value="laptop">Laptop</option>
           <option value="gps">GPS</option>
         </select>
-        <div className="text-danger small mt-1">
+        <div
+          className={`small mt-1 ${
+            errors.deviceType ? "text-danger" : "text-muted"
+          }`}
+        >
           {errors.deviceType?.message}
         </div>
       </div>
@@ -276,7 +342,9 @@ export default function RepairForm() {
         </label>
         <input
           type="text"
-          className="form-control"
+          className={`form-control ${
+            theme === "dark" ? "bg-dark text-white border-light" : ""
+          }`}
           id="brandModel"
           placeholder="Ex: Samsung Galaxy S21"
           {...register("brandModel")}
@@ -284,30 +352,33 @@ export default function RepairForm() {
       </div>
 
       {/* File Upload */}
-      <div className="custom-file-upload mb-3">
+      <div
+        className="custom-file-upload mb-3 p-2 rounded"
+        style={customFileUploadStyle}
+      >
         <label
-          className="custom-file-label me-2"
+          className="custom-file-label me-2 p-2 rounded"
           onClick={handleFileLabelClick}
-          style={{ cursor: "pointer" }}
+          style={customFileLabelStyle}
         >
           Atașează o imagine (opțional)
         </label>
         <input
-          {...register("file")} // Add this
+          {...register("file")}
           className="file-upload"
           name="file"
           type="file"
           ref={(e) => {
-            fileInputRef.current = e; // Keep your ref
-            register("file").ref(e); // Connect react-hook-form's ref
+            fileInputRef.current = e;
+            register("file").ref(e);
           }}
           style={{ display: "none" }}
           onChange={(e) => {
-            handleFileChange(e); // Keep your existing handler
-            register("file").onChange(e); // Update react-hook-form
+            handleFileChange(e);
+            register("file").onChange(e);
           }}
         />
-        <span className="file-name">{selectedFileName}</span>
+        <span className="file-name ms-2">{selectedFileName}</span>
         <div id="fileError" className="text-danger"></div>
       </div>
 
@@ -317,7 +388,9 @@ export default function RepairForm() {
           Descrierea problemei
         </label>
         <textarea
-          className="form-control"
+          className={`form-control ${
+            theme === "dark" ? "bg-dark text-white border-light" : ""
+          }`}
           id="problemDescription"
           rows="3"
           placeholder="Scrie aici ce problemă are dispozitivul..."
@@ -329,12 +402,17 @@ export default function RepairForm() {
       <div className="form-check mb-3">
         <input
           type="checkbox"
-          className="form-check-input"
+          className={`form-check-input ${
+            theme === "dark" ? "border-light" : ""
+          }`}
           id="acceptContact"
           {...register("acceptContact", { value: false })}
-          value="Da" // This will send "Da" when checked
+          value="Da"
         />
-        <label className="form-check-label" htmlFor="acceptContact">
+        <label
+          className={`form-check-label ${theme === "dark" ? "text-white" : ""}`}
+          htmlFor="acceptContact"
+        >
           Sunt de acord să fiu contactat(ă) cu privire la această cerere.
         </label>
       </div>
@@ -346,7 +424,9 @@ export default function RepairForm() {
             Cum preferi să fii contactat(ă)?
           </label>
           <select
-            className="form-select"
+            className={`form-select ${
+              theme === "dark" ? "bg-dark text-white border-light" : ""
+            }`}
             id="preferredContact"
             {...register("preferredContact")}
           >
@@ -367,7 +447,7 @@ export default function RepairForm() {
       {/* Submit Button */}
       <button
         type="submit"
-        className="btn btn-primary"
+        className="btn btn-primary w-100"
         disabled={isSubmitting || !isTurnstileReady}
       >
         {isSubmitting && (
@@ -382,3 +462,13 @@ export default function RepairForm() {
     </form>
   );
 }
+
+// Add PropTypes for better component documentation
+RepairForm.propTypes = {
+  theme: PropTypes.oneOf(["light", "dark"]),
+};
+
+// Default props
+RepairForm.defaultProps = {
+  theme: "dark",
+};
