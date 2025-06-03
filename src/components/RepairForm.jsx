@@ -492,7 +492,7 @@ export default function RepairForm({ theme = "dark" }) {
       {/* Turnstile Widget Container */}
       <div
         ref={turnstileWidgetRef}
-        className="cf-turnstile d-flex flex-column align-items-center justify-content-center mb-3"
+        className="cf-turnstile d-flex flex-column align-items-center justify-content-center gap-3 mb-3"
         style={{ minHeight: "65px" }} // Ensure consistent height
       >
         {(!isTurnstileReady || turnstileError) && (
@@ -508,7 +508,7 @@ export default function RepairForm({ theme = "dark" }) {
                 setTurnstileTimeout(false);
                 window.location.reload();
               }}
-              className="btn btn-sm btn-outline-secondary"
+              className="btn btn-sm btn-primary"
             >
               Reîncarcă
             </button>
