@@ -40,7 +40,7 @@ const ToggleButton = styled.button`
 `;
 
 const ChatWindow = styled.div`
-  width: 350px;
+  width: 320px;
   height: 450px;
   background: #1e293b;
   border-radius: 8px;
@@ -49,6 +49,10 @@ const ChatWindow = styled.div`
   flex-direction: column;
   border: 1px solid #334155;
   overflow: hidden;
+
+  @media (max-width: 576px) {
+    width: 360px;
+  }
 `;
 
 const ChatHeader = styled.div`
