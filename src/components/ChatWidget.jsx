@@ -40,7 +40,7 @@ const ToggleButton = styled.button`
 `;
 
 const ChatWindow = styled.div`
-  width: 320px;
+  width: 350px;
   height: 450px;
   background: #1e293b;
   border-radius: 8px;
