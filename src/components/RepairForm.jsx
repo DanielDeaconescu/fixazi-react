@@ -492,7 +492,7 @@ export default function RepairForm({ theme = "dark" }) {
       {/* Turnstile Widget Container */}
       <div
         ref={turnstileWidgetRef}
-        className="cf-turnstile d-flex justify-content-center mb-3"
+        className="cf-turnstile d-flex flex-column align-items-center justify-content-center mb-3"
         style={{ minHeight: "65px" }} // Ensure consistent height
       >
         {(!isTurnstileReady || turnstileError) && (
