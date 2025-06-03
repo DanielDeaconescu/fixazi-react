@@ -5,6 +5,7 @@ import styled from "styled-components";
 import { Link } from "react-router-dom";
 import RepairForm from "./RepairForm";
 import LogoFixAzi from "../assets/images/fixazi_logo.jpg";
+import Logo from "./Logo";
 import TablePrices from "./TablePrices";
 
 const StyledIcon = styled(FontAwesomeIcon)``;
@@ -57,10 +58,10 @@ function Footer() {
         <div className="container">
           <div className="row">
             <div className="col-lg-4 my-3 d-flex flex-column align-items-start about-section-footer">
-              <h5>
-                Despre
-                <img src="./images/fixazi_logo_nobg.png" width="250" alt="" />
-              </h5>
+              <div className="d-flex justify-content-center align-items-center gap-2">
+                <h5>Despre</h5>
+                <Logo />
+              </div>
               <FooterStyledParagraph>
                 La FIXAZI, ne dedicăm reparației rapide și de calitate a
                 dispozitivelor tale preferate. Indiferent dacă este vorba de un
