@@ -158,6 +158,14 @@ const SendButton = styled.button`
   }
 `;
 
+const StyledFiSend = styled(FiSend)`
+  font-size: 1rem;
+
+  @media (max-width: 576px) {
+    font-size: 1rem;
+  }
+`;
+
 const InfoForm = styled.form`
   padding: 16px;
   background: #1e293b;
@@ -554,7 +562,7 @@ export default function ChatWidget() {
                       <span className="visually-hidden">Loading...</span>
                     </div>
                   ) : (
-                    <FiSend size={16} />
+                    <StyledFiSend />
                   )}
                 </SendButton>
               </InputContainer>
