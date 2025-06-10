@@ -1,5 +1,9 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faInstagram, faTiktok } from "@fortawesome/free-brands-svg-icons";
+import {
+  faFacebook,
+  faInstagram,
+  faTiktok,
+} from "@fortawesome/free-brands-svg-icons";
 import { faCircleInfo } from "@fortawesome/free-solid-svg-icons";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
@@ -129,7 +133,7 @@ function Footer() {
                   className="text-decoration-none"
                 >
                   <StyledIcon
-                    icon={faTiktok}
+                    icon={faFacebook}
                     className="fa-3x text-light mx-2"
                   />
                 </a>
