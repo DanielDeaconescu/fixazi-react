@@ -40,6 +40,10 @@ const StyledTabs = styled.div`
   display: flex;
   justify-content: center;
   gap: 1rem;
+
+  @media (max-width: 576px) {
+    gap: 0.5rem;
+  }
 `;
 
 const StyledButton = styled.button`
@@ -63,6 +67,10 @@ const StyledTabContent = styled.div`
   justify-content: center;
   max-width: 600px;
   height: 100px;
+
+  @media (max-width: 576px) {
+    max-width: 80%;
+  }
 `;
 
 const StyledContainerOuter = styled.div`
@@ -91,14 +99,30 @@ const StyledPOurValues = styled.p`
   text-align: justify;
 `;
 
+const StyledTitle = styled.span`
+  @media (max-width: 576px) {
+    display: none;
+  }
+`;
+
+const StyledFontAwesomeIcon = styled(FontAwesomeIcon)`
+  @media (max-width: 576px) {
+    font-size: 1.5rem;
+  }
+
+  @media (min-width: 576px) {
+    margin-right: 0.5rem;
+  }
+`;
+
 function Tab({ num, activeTab, onClick, title, icon }) {
   return (
     <StyledButton
       className={activeTab === num ? "tab active" : "tab"}
       onClick={() => onClick(num)}
     >
-      <FontAwesomeIcon icon={icon} className="me-2" />
-      {title}
+      <StyledFontAwesomeIcon icon={icon} />
+      <StyledTitle>{title}</StyledTitle>
     </StyledButton>
   );
 }
