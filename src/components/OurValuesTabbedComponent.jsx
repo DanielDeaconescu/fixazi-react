@@ -44,6 +44,10 @@ const StyledTabs = styled.div`
   @media (max-width: 576px) {
     gap: 0.5rem;
   }
+
+  @media (min-width: 576px) and (max-width: 768px) {
+    gap: 0.75rem;
+  }
 `;
 
 const StyledButton = styled.button`
@@ -54,7 +58,8 @@ const StyledButton = styled.button`
   font-weight: bold;
   color: #fff;
   transition: all 0.3s;
-
+  display: flex;
+  align-items: center;
   &.active,
   &:hover {
     background-color: #4bc1e7;
@@ -69,6 +74,10 @@ const StyledTabContent = styled.div`
   height: 100px;
 
   @media (max-width: 576px) {
+    max-width: 80%;
+  }
+
+  @media (min-width: 576px) and (max-width: 768px) {
     max-width: 80%;
   }
 `;
@@ -100,18 +109,21 @@ const StyledPOurValues = styled.p`
 `;
 
 const StyledTitle = styled.span`
-  @media (max-width: 576px) {
+  @media (max-width: 768px) {
     display: none;
   }
 `;
 
 const StyledFontAwesomeIcon = styled(FontAwesomeIcon)`
+  margin-right: 0.5rem;
   @media (max-width: 576px) {
     font-size: 1.5rem;
+    margin-right: 0;
   }
 
-  @media (min-width: 576px) {
-    margin-right: 0.5rem;
+  @media (min-width: 576px) and (max-width: 768px) {
+    font-size: 2rem;
+    margin-right: 0;
   }
 `;
 
