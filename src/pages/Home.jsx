@@ -1,6 +1,7 @@
 import CallToActionIndex from "../components/CallToActionIndex";
 import HeaderHome from "../components/HeaderHome";
 import OurValues from "../components/OurValues";
+import OurValuesTabbedComponent from "../components/OurValuesTabbedComponent";
 import PhotoGallery from "../components/PhotoGallery";
 import { Helmet } from "react-helmet-async";
 
@@ -15,7 +16,8 @@ function Home({ toggleChat }) {
         />
       </Helmet>
       <HeaderHome toggleChat={toggleChat} />
-      <OurValues />
+      {/* <OurValues /> */}
+      <OurValuesTabbedComponent />
       <CallToActionIndex />
       <PhotoGallery />
     </>

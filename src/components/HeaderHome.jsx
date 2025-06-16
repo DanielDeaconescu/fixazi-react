@@ -17,6 +17,7 @@ const StyledHeader = styled.header`
   position: relative;
   overflow: hidden;
   height: 600px;
+  border-bottom: 2px solid #fff;
 
   @media (max-width: 576px) {
     max-height: 400px;
