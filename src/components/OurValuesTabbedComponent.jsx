@@ -106,6 +106,10 @@ const StyledPOurValues = styled.p`
   max-width: 750px;
   padding: 1rem;
   text-align: justify;
+
+  @media (max-width: 576px) {
+    max-width: 90%;
+  }
 `;
 
 const StyledTitle = styled.span`
