@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSquarePen } from "@fortawesome/free-solid-svg-icons";
 import { faSquareWhatsapp } from "@fortawesome/free-brands-svg-icons";
 import { useMediaQuery } from "react-responsive";
+import { useLocation } from "react-router-dom";
 
 // Styled Components
 const SideButtonsContainer = styled.div`
@@ -60,26 +61,31 @@ const SideButtons = () => {
   const [showFormLabel, setShowFormLabel] = useState(false);
   const [showWhatsappLabel, setShowWhatsappLabel] = useState(false);
 
+  const { pathname } = useLocation();
+  const hideFormButton = ["/repairRequest"].includes(pathname);
+
   return (
     <SideButtonsContainer>
-      <ButtonContainer
-        isHovered={showFormLabel}
-        onMouseEnter={() => setShowFormLabel(true)}
-        onMouseLeave={() => setShowFormLabel(false)}
-      >
-        {isDesktop && (
-          <ButtonLabel show={showFormLabel}>Cerere de reparație</ButtonLabel>
-        )}
-        <ButtonLink
-          color="hsl(195, 77%, 60%)"
-          href="#"
-          data-bs-toggle="modal"
-          data-bs-target="#formModal"
-          aria-label="Cerere de reparație"
+      {!hideFormButton && (
+        <ButtonContainer
+          isHovered={showFormLabel}
+          onMouseEnter={() => setShowFormLabel(true)}
+          onMouseLeave={() => setShowFormLabel(false)}
         >
-          <FontAwesomeIcon icon={faSquarePen} size="2x" />
-        </ButtonLink>
-      </ButtonContainer>
+          {isDesktop && (
+            <ButtonLabel show={showFormLabel}>Cerere de reparație</ButtonLabel>
+          )}
+          <ButtonLink
+            color="hsl(195, 77%, 60%)"
+            href="#"
+            data-bs-toggle="modal"
+            data-bs-target="#formModal"
+            aria-label="Cerere de reparație"
+          >
+            <FontAwesomeIcon icon={faSquarePen} size="2x" />
+          </ButtonLink>
+        </ButtonContainer>
+      )}
 
       <ButtonContainer
         isHovered={showWhatsappLabel}
