@@ -12,25 +12,25 @@ const content = [
   {
     valueName: "Transparență",
     valueDescription:
-      "Comunicăm clar și sincer fiecare etapă a procesului de reparație, fără costuri ascunse.",
+      "Oferim diagnosticări clare și explicații detaliate, astfel încât clienții să știe exact ce reparații efectuăm și de ce.",
     icon: faEye,
   },
   {
     valueName: "Promptitudine",
     valueDescription:
-      "Ne angajăm să răspundem rapid cererilor și să oferim termene realiste și respectate.",
+      "Respectăm termenele stabilite și reparăm rapid dispozitivele, pentru ca tu să te bucuri din nou de ele cât mai curând.",
     icon: faClock,
   },
   {
     valueName: "Responsabilitate",
     valueDescription:
-      "Tratăm fiecare dispozitiv ca și cum ar fi al nostru și oferim garanție pentru serviciile prestate.",
+      "Tratăm fiecare reparație cu seriozitate, folosind doar piese de calitate și oferind garanție pentru serviciile noastre.",
     icon: faShieldAlt,
   },
   {
     valueName: "Calitate",
     valueDescription:
-      "Folosim doar componente de încredere și respectăm standarde tehnice riguroase în fiecare reparație.",
+      "Lucrăm profesionist, cu atenție la detalii, pentru a oferi reparații durabile și servicii la cele mai înalte standarde.",
     icon: faStar,
   },
 ];
