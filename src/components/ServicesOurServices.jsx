@@ -57,6 +57,10 @@ const StyledServicesOurServices = styled.div`
   border-top: 2px solid #fff;
   border-bottom: 2px solid #fff;
   padding: 5rem;
+
+  @media (max-width: 576px) {
+    padding: 2rem;
+  }
 `;
 const StyledButton = styled.button`
   background-color: #fff;
@@ -145,6 +149,7 @@ const StyledTabContent = styled.div`
 
   @media (max-width: 576px) {
     padding: 0;
+    text-align: center;
   }
 `;
 
