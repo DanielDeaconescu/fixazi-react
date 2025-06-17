@@ -90,7 +90,7 @@ const StyledContentTabs = styled.div`
   height: 100px;
 
   @media (max-width: 576px) {
-    height: unset;
+    height: 220px;
   }
 
   @media (min-width: 576px) and (max-width: 768px) {
