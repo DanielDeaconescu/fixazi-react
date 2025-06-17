@@ -76,20 +76,51 @@ const StyledTabs = styled.div`
   justify-content: center;
   gap: 0.5rem;
   padding: 1rem;
+
+  @media (max-width: 576px) {
+  }
 `;
 
 const StyledContentTabs = styled.div`
   max-width: 650px;
   height: 100px;
+
+  @media (max-width: 576px) {
+    height: unset;
+  }
+
+  @media (min-width: 576px) and (max-width: 768px) {
+    height: 200px;
+  }
 `;
 
 const StyledFontAwesomeIcon = styled(FontAwesomeIcon)`
   margin-right: 0.5rem;
+
+  @media (max-width: 576px) {
+    margin: 0;
+    font-size: 1.2rem;
+  }
+
+  @media (min-width: 576px) and (max-width: 768px) {
+    margin: 0;
+    font-size: 1.6rem;
+  }
 `;
 
 const StyledFontAwesomeIcon2 = styled(FontAwesomeIcon)`
   font-size: 3rem;
   flex: 1;
+
+  @media (max-width: 576px) {
+    display: none;
+  }
+`;
+
+const StyledTitle = styled.span`
+  @media (max-width: 768px) {
+    display: none;
+  }
 `;
 
 function Tab({ title, activeTab, num, onClick, serviceIcon }) {
@@ -99,7 +130,7 @@ function Tab({ title, activeTab, num, onClick, serviceIcon }) {
       onClick={() => onClick(num)}
     >
       <StyledFontAwesomeIcon icon={serviceIcon} />
-      {title}
+      <StyledTitle>{title}</StyledTitle>
     </StyledButton>
   );
 }
@@ -111,10 +142,22 @@ const StyledTabContent = styled.div`
   gap: 1rem;
   color: #fff;
   padding: 1rem;
+
+  @media (max-width: 576px) {
+    padding: 0;
+  }
 `;
 
 const StyledDescription = styled.div`
   flex: 5;
+
+  @media (max-width: 576px) {
+    font-size: 1.2rem;
+  }
+
+  @media (min-width: 576px) and (max-width: 768px) {
+    font-size: 1.4rem;
+  }
 `;
 
 function TabContent({ description, serviceIcon }) {
@@ -134,6 +177,11 @@ const OurServicesParagraph = styled.p`
   color: #fff;
   max-width: 70%;
   text-align: center;
+
+  @media (max-width: 768px) {
+    max-width: 100%;
+    font-size: 1.2rem;
+  }
 `;
 
 function ServicesOurServices() {
