@@ -173,7 +173,6 @@ function Navbar() {
       <StyledContainer>
         <BootstrapNavbar.Brand as={Link} to="/">
           <img src={navbarLogo} alt="" width="250" />
-          Test
         </BootstrapNavbar.Brand>
 
         <WhiteNavbarToggle
